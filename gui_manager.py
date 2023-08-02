@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
-import pandas as pd
 
-class ScrollableFrame:
+
+class DataFrameView:
     def __init__(self, parent, df, position_title):
         container = ttk.Frame(parent)
         container.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
@@ -10,38 +10,25 @@ class ScrollableFrame:
         header_label = ttk.Label(container, text=position_title, font=('Helvetica', 16, 'bold'))
         header_label.pack(side=tk.TOP, pady=10, padx=20)
 
-        self.canvas = tk.Canvas(container, highlightthickness=0)
-        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
+        self.tree = ttk.Treeview(container, columns=("Player", "Position", "Proj Pts"), show="headings")
+        self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
 
-        scrollbar = ttk.Scrollbar(container, orient="vertical", command=self.canvas.yview)
+        self.tree.heading("Player", text="Player")
+        self.tree.heading("Position", text="Position")
+        self.tree.heading("Proj Pts", text="Proj Pts")
+
+        self.tree.column("Player", width=200)
+        self.tree.column("Position", width=100)
+        self.tree.column("Proj Pts", width=100)
+
+        scrollbar = ttk.Scrollbar(container, orient="vertical", command=self.tree.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        self.canvas.configure(yscrollcommand=scrollbar.set)
-        self.scroll_frame = ttk.Frame(self.canvas)
-        self.canvas.create_window((0, 0), window=self.scroll_frame, anchor="nw")
-
-        # Create table header
-        header_frame = ttk.Frame(self.scroll_frame)
-        header_frame.pack(side=tk.TOP, fill=tk.X)
-
-        ttk.Label(header_frame, text="Player", width=25, font=('Helvetica', 12, 'bold')).pack(side=tk.LEFT, padx=5, pady=5)
-        ttk.Label(header_frame, text="Position", font=('Helvetica', 12, 'bold')).pack(side=tk.LEFT, padx=5, pady=5)
-        ttk.Label(header_frame, text="Proj Pts", font=('Helvetica', 12, 'bold')).pack(side=tk.LEFT, padx=5, pady=5)
+        self.tree.configure(yscrollcommand=scrollbar.set)
 
         # Add players
-        self.rows = []
         for index, row in df.iterrows():
-            row_frame = ttk.Frame(self.scroll_frame)
-            row_frame.pack(side=tk.TOP, fill=tk.X)
-
-            ttk.Label(row_frame, text=row['Player'], width=25).pack(side=tk.LEFT, padx=5, pady=2)
-            ttk.Label(row_frame, text=row['Position']).pack(side=tk.LEFT, padx=5, pady=2)
-            ttk.Label(row_frame, text=row['Proj Pts']).pack(side=tk.LEFT, padx=5, pady=2)
-
-            self.rows.append(row_frame)
-
-    def update_scrollregion(self, event):
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+            self.tree.insert("", tk.END, values=(row['Player'], row['Position'], row['Proj Pts']))
 
 
 def create_gui(root, qb_df, other_positions_df):
@@ -53,25 +40,37 @@ def create_gui(root, qb_df, other_positions_df):
     style.theme_use("clam")
     style.configure("TFrame", background="lightgray")  # Set background color for ttk.Frame widgets
 
-    notebook = ttk.Notebook(root)
-    notebook.pack(expand=1, fill=tk.BOTH, padx=20, pady=20)
+    def show_frame(frame):
+        frame.tkraise()
 
-    qb_frame = ttk.Frame(notebook)
-    other_positions_frame = ttk.Frame(notebook)
+    container = ttk.Frame(root)
+    container.pack(side="top", fill="both", expand=True)
+    container.grid_rowconfigure(0, weight=1)
+    container.grid_columnconfigure(0, weight=1)
 
-    notebook.add(qb_frame, text="Quarterbacks")
-    notebook.add(other_positions_frame, text="Other Positions (RB/TE/WR)")
+    qb_frame = ttk.Frame(container)
+    other_positions_frame = ttk.Frame(container)
 
-    qb_scrollable_frame = ScrollableFrame(qb_frame, qb_df, "Quarterbacks")
-    other_positions_scrollable_frame = ScrollableFrame(other_positions_frame, other_positions_df, "Other Positions")
+    for frame in (qb_frame, other_positions_frame):
+        frame.grid(row=0, column=0, sticky="nsew")
 
-    qb_scrollable_frame.canvas.bind('<Configure>', qb_scrollable_frame.update_scrollregion)
-    other_positions_scrollable_frame.canvas.bind('<Configure>', other_positions_scrollable_frame.update_scrollregion)
+    DataFrameView(qb_frame, qb_df, "Quarterbacks")
+    DataFrameView(other_positions_frame, other_positions_df, "Other Positions")
+
+    button_frame = ttk.Frame(root)
+    button_frame.pack(side=tk.TOP, fill=tk.X)
+
+    qb_button = ttk.Button(button_frame, text="Quarterbacks", command=lambda: show_frame(qb_frame))
+    qb_button.pack(side=tk.LEFT, padx=5, pady=5)
+
+    other_positions_button = ttk.Button(button_frame, text="Other Positions (RB/TE/WR)", command=lambda: show_frame(other_positions_frame))
+    other_positions_button.pack(side=tk.LEFT, padx=5, pady=5)
+
+    # Initially show the Quarterbacks frame
+    show_frame(qb_frame)
 
 
 # Example usage
-# qb_df = pd.DataFrame(...)
-# other_positions_df = pd.DataFrame(...)
 # root = tk.Tk()
 # create_gui(root, qb_df, other_positions_df)
 # root.mainloop()
