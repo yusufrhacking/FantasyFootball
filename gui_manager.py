@@ -10,13 +10,15 @@ class DataFrameView:
         header_label = ttk.Label(container, text=position_title, font=('Helvetica', 16, 'bold'))
         header_label.pack(side=tk.TOP, pady=10, padx=20)
 
-        self.tree = ttk.Treeview(container, columns=("Player", "Position", "Proj Pts"), show="headings")
+        self.tree = ttk.Treeview(container, columns=("Ranking", "Player", "Position", "Proj Pts"), show="headings")
         self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
 
+        self.tree.heading("Ranking", text="Ranking")
         self.tree.heading("Player", text="Player")
         self.tree.heading("Position", text="Position")
         self.tree.heading("Proj Pts", text="Proj Pts")
 
+        self.tree.column("Ranking", width=100)
         self.tree.column("Player", width=200)
         self.tree.column("Position", width=100)
         self.tree.column("Proj Pts", width=100)
@@ -27,8 +29,10 @@ class DataFrameView:
         self.tree.configure(yscrollcommand=scrollbar.set)
 
         # Add players
+        count = 1
         for index, row in df.iterrows():
-            self.tree.insert("", tk.END, values=(row['Player'], row['Position'], row['Proj Pts']))
+            self.tree.insert("", tk.END, values=(count, row['Player'], row['Position'], row['Proj Pts']))
+            count += 1
 
 
 def create_gui(root, qb_df, other_positions_df):
