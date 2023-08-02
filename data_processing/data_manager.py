@@ -1,9 +1,10 @@
 import pandas as pd
 
-from fantasy_life_csv_processing import get_fantasy_life_csvs, parse_fantasy_life_csv, merge_dfs, sort_by_projected_points, filter_by_position
-from pff_csv_processing import read_pff_csv
+from data_processing.fantasy_life_csv_processing import get_fantasy_life_csvs, parse_fantasy_life_csv, merge_dfs, \
+    sort_by_projected_points, filter_by_position
+from data_processing.pff_csv_processing import read_pff_csv
 
-pff_projections_path = "data/pff_projs/pff_all_projections.csv"
+pff_projections_path = "../data/pff_projs/pff_all_projections.csv"
 
 
 def get_df():

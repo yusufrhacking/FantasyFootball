@@ -1,7 +1,7 @@
 import sqlite3
 import pandas as pd
 
-from data_manager import get_players
+from data_processing.data_manager import get_players
 
 
 def is_database_empty(conn):
@@ -30,8 +30,7 @@ def read_from_sqlite(conn):
 
 
 def get_players_data():
-    conn = sqlite3.connect('data/fantasy_football.sqlite3')
-
+    conn = sqlite3.connect('/Users/yusufhacking/Documents/Projects/FantasyFootball/data/fantasy_football.sqlite3')
     if is_database_empty(conn):
         write_to_sqlite(get_players(), conn)
 
