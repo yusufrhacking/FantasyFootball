@@ -8,7 +8,7 @@ def main():
     players_dfs = get_players()
     root = tk.Tk()
 
-    positions = {"QB", "RB", "WR", "TE", "FLEX"}
+    positions = ["QB", "RB", "WR", "TE", "FLEX"]
     dfs = []
 
     for position in positions:
