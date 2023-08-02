@@ -6,10 +6,10 @@ from gui.button_controller import ButtonController
 from gui.frame_controller import FrameController
 
 
-class FantasyFootballApp:
+class PositionalRankingsApp:
     def __init__(self, root, data_frames):
         root.title("Fantasy Football Projections")
-        root.geometry("800x600")
+        root.geometry("1200x800")
         root.configure(bg='lightgray')
 
         style = ttk.Style(root)
@@ -25,17 +25,5 @@ class FantasyFootballApp:
         dfs, titles = zip(*data_frames)
         frame_controller = FrameController(container, zip(dfs, titles))
         button_controller = ButtonController(root, frame_controller, titles)
-
-        # Create a list of players for drafting
-        players = [row['Player'] for df in dfs for index, row in df.iterrows()]
-
-        # Callback function to remove drafted player from data_frames
-        def on_draft(player):
-            for df in dfs:
-                df.drop(df[df['Player'] == player].index, inplace=True)
-
-        # Add the drafting feature
-        # drafting_controller = DraftingController(container, players, on_draft)
-
         # Initially show the first frame in the list
         frame_controller.frames[titles[0]].tkraise()
