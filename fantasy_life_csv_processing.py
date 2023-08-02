@@ -3,7 +3,7 @@ import glob
 import re
 
 def get_fantasy_life_csvs():
-    return glob.glob("dwain_projs/*.csv")
+    return glob.glob("data/dwain_projs/*.csv")
 
 def parse_fantasy_life_csv(file):
     position_match = re.search(r"dwain_(\w+)_projections.csv", file)
