@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from gui.button_controller import ButtonController
-from gui.drafting import DraftingController
+# from gui.drafting import DraftingController
 from gui.frame_controller import FrameController
 
 
@@ -35,7 +35,7 @@ class FantasyFootballApp:
                 df.drop(df[df['Player'] == player].index, inplace=True)
 
         # Add the drafting feature
-        drafting_controller = DraftingController(container, players, on_draft)
+        # drafting_controller = DraftingController(container, players, on_draft)
 
         # Initially show the first frame in the list
         frame_controller.frames[titles[0]].tkraise()
