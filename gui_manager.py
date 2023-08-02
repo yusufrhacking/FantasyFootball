@@ -10,29 +10,22 @@ class DataFrameView:
         header_label = ttk.Label(container, text=position_title, font=('Helvetica', 16, 'bold'))
         header_label.pack(side=tk.TOP, pady=10, padx=20)
 
-        self.tree = ttk.Treeview(container, columns=("Ranking", "Player", "Position", "Proj Pts"), show="headings")
+        columns = tuple(df.columns)
+        self.tree = ttk.Treeview(container, columns=columns, show="headings")
         self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
 
-        self.tree.heading("Ranking", text="Ranking")
-        self.tree.heading("Player", text="Player")
-        self.tree.heading("Position", text="Position")
-        self.tree.heading("Proj Pts", text="Proj Pts")
-
-        self.tree.column("Ranking", width=100)
-        self.tree.column("Player", width=200)
-        self.tree.column("Position", width=100)
-        self.tree.column("Proj Pts", width=100)
+        for col in columns:
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=100)
 
         scrollbar = ttk.Scrollbar(container, orient="vertical", command=self.tree.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.tree.configure(yscrollcommand=scrollbar.set)
 
-        # Add players
-        count = 1
+        # Add data
         for index, row in df.iterrows():
-            self.tree.insert("", tk.END, values=(count, row['Player'], row['Position'], row['Proj Pts']))
-            count += 1
+            self.tree.insert("", tk.END, values=tuple(row))
 
 
 def create_gui(root, qb_df, other_positions_df):
@@ -44,8 +37,8 @@ def create_gui(root, qb_df, other_positions_df):
     style.theme_use("clam")
     style.configure("TFrame", background="lightgray")  # Set background color for ttk.Frame widgets
 
-    def show_frame(frame):
-        frame.tkraise()
+    def show_frame(frame_to_show):
+        frame_to_show.tkraise()
 
     container = ttk.Frame(root)
     container.pack(side="top", fill="both", expand=True)
@@ -67,14 +60,9 @@ def create_gui(root, qb_df, other_positions_df):
     qb_button = ttk.Button(button_frame, text="Quarterbacks", command=lambda: show_frame(qb_frame))
     qb_button.pack(side=tk.LEFT, padx=5, pady=5)
 
-    other_positions_button = ttk.Button(button_frame, text="Other Positions (RB/TE/WR)", command=lambda: show_frame(other_positions_frame))
+    other_positions_button = ttk.Button(button_frame, text="Other Positions (RB/TE/WR)",
+                                        command=lambda: show_frame(other_positions_frame))
     other_positions_button.pack(side=tk.LEFT, padx=5, pady=5)
 
     # Initially show the Quarterbacks frame
     show_frame(qb_frame)
-
-
-# Example usage
-# root = tk.Tk()
-# create_gui(root, qb_df, other_positions_df)
-# root.mainloop()
