@@ -1,7 +1,9 @@
 import tkinter as tk
 from data_manager import get_players
-from gui_manager import FantasyFootballApp
+
 from database_manager import get_players_data
+from gui.app import FantasyFootballApp
+
 
 def main():
     # Fetch the data from the data manager
