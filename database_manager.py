@@ -1,6 +1,8 @@
 import sqlite3
 import pandas as pd
 
+from data_manager import get_players
+
 
 def is_database_empty(conn):
     cursor = conn.cursor()
@@ -19,16 +21,19 @@ def read_from_sqlite(conn):
     players_dfs = {}
 
     for position in positions:
-        players_dfs[position] = pd.read_sql_query(f"SELECT * FROM {position}", conn)
+        df = pd.read_sql_query(f"SELECT * FROM {position}", conn)
+        # Drop the 'index' column from the DataFrame
+        df = df.drop(columns='index', errors='ignore')
+        players_dfs[position] = df
 
     return players_dfs
 
 
-def get_players_data(players_dfs=None):
+def get_players_data():
     conn = sqlite3.connect('fantasy_football.sqlite3')
 
-    if is_database_empty(conn) and players_dfs is not None:
-        write_to_sqlite(players_dfs, conn)
+    if is_database_empty(conn):
+        write_to_sqlite(get_players(), conn)
 
     players_data = read_from_sqlite(conn)
     conn.close()

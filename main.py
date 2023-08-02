@@ -6,11 +6,8 @@ from gui.app import FantasyFootballApp
 
 
 def main():
-    # Fetch the data from the data manager
-    players_dfs = get_players()
-
     # Get the data from the database manager, writing if the database is empty
-    players_data = get_players_data(players_dfs)
+    players_data = get_players_data()
 
     root = tk.Tk()
     dfs = [(df, position) for position, df in players_data.items()]

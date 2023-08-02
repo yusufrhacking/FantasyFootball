@@ -7,7 +7,6 @@ class DataFrameView:
     def __init__(self, container, df, title):
         self.container = ttk.Frame(container)
         self.container.grid(row=0, column=0, sticky="nsew")
-
         self._add_header(title)
         self._create_tree_view(df)
         self._populate_tree_view(df)
