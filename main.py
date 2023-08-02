@@ -1,17 +1,14 @@
 import tkinter as tk
 from data_manager import get_players
-import sys
-print(sys.version)
-print("TK Version: " + str(tk.TclVersion))
-from gui_manager import create_scrollable_frame
+from gui_manager import create_gui
 
 def main():
     qb_df, other_positions_df = get_players()
     root = tk.Tk()
-    root.title("Top Players")
+    root.title("Top Fantasy Players")
+    root.geometry('800x600') # You can set the dimensions as per your requirement
 
-    message = tk.Label(root, text="Hello, World!")
-    message.pack()
+    create_gui(root, qb_df, other_positions_df)
 
     root.mainloop()
 
