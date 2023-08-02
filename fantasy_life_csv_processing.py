@@ -22,4 +22,5 @@ def sort_by_projected_points(df):
     return df
 
 def filter_by_position(df, positions):
-    return df[df['Position'].isin(positions)][['Player', 'Position', 'Avg Proj Pts']]
+    return df[df['Position'].isin(positions)]
+

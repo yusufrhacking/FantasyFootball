@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import pandas as pd
 
 
 class DataFrameView:
@@ -34,9 +35,9 @@ class DataFrameView:
 
 
 class FrameController:
-    def __init__(self, container, dfs, titles):
+    def __init__(self, container, df_title_pairs):
         self.frames = {}
-        for df, title in zip(dfs, titles):
+        for df, title in df_title_pairs:
             frame = DataFrameView(container, df, title)
             self.frames[title] = frame.container
 
@@ -51,7 +52,7 @@ class ButtonController:
 
 
 class FantasyFootballApp:
-    def __init__(self, root, qb_df, other_positions_df):
+    def __init__(self, root, data_frames):
         root.title("Fantasy Football Projections")
         root.geometry("800x600")
         root.configure(bg='lightgray')
@@ -65,17 +66,10 @@ class FantasyFootballApp:
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
-        frames = [qb_df, other_positions_df]
-        titles = ["Quarterbacks", "Other Positions"]
-
-        frame_controller = FrameController(container, frames, titles)
+        # Unpack the list of data frames and titles using zip
+        dfs, titles = zip(*data_frames)
+        frame_controller = FrameController(container, zip(dfs, titles))
         button_controller = ButtonController(root, frame_controller, titles)
 
-        # Initially show the Quarterbacks frame
-        frame_controller.frames["Quarterbacks"].tkraise()
-
-
-# Example usage:
-# root = tk.Tk()
-# app = FantasyFootballApp(root, qb_df, other_positions_df)
-# root.mainloop()
+        # Initially show the first frame in the list
+        frame_controller.frames[titles[0]].tkraise()

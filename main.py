@@ -1,12 +1,20 @@
 import tkinter as tk
+import pandas as pd
 from data_manager import get_players
 from gui_manager import FantasyFootballApp
 
 
 def main():
-    qb_df, other_positions_df = get_players()
+    players_dfs = get_players()
     root = tk.Tk()
-    app = FantasyFootballApp(root, qb_df, other_positions_df)
+
+    positions = {"QB", "RB", "WR", "TE", "FLEX"}
+    dfs = []
+
+    for position in positions:
+        dfs.append((players_dfs[position], position))
+
+    app = FantasyFootballApp(root, dfs)
     root.mainloop()
 
 if __name__ == "__main__":
