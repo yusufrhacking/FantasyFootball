@@ -39,25 +39,12 @@ class DraftPageApp:
         self.bottom_frame.pack(side="top", fill="both", expand=True)
         self.tree = self.create_tree(self.bottom_frame)
         self.tree.grid(row=0, column=0, sticky="nsew")
-        self.create_side_frame(self.bottom_frame)
 
         self.bottom_frame.grid_columnconfigure(0, weight=3)
         self.bottom_frame.grid_columnconfigure(1, weight=1)
         self.bottom_frame.grid_rowconfigure(0, weight=1)
 
-    def create_side_frame(self, bottom_frame):
-        side_frame = ttk.Frame(bottom_frame, padding="20")
-        side_frame.grid(row=0, column=1, sticky="nsew")
-        self.create_draft_button(side_frame)
-        self.create_remove_button(side_frame)
 
-    def create_draft_button(self, side_frame):
-        draft_button = ttk.Button(side_frame, text="Draft Player", command=self.draft_player)
-        draft_button.pack(pady=10)
-
-    def create_remove_button(self, side_frame):
-        remove_button = ttk.Button(side_frame, text="Remove Player", command=self.remove_player)
-        remove_button.pack(pady=10)
 
     def create_tree(self, root):
         tree = ttk.Treeview(root, selectmode="browse")
@@ -103,8 +90,3 @@ class DraftPageApp:
         self.team_sidebar.add_player(player_data)
         self.tree.delete(selected_item)
 
-    def remove_player(self):
-        selected_index = self.team_sidebar.get_selected_index()
-        player_data = self.team_sidebar.drafted_players[selected_index]
-        self.team_sidebar.remove_player(selected_index)
-        self.tree.insert("", tk.END, values=player_data, tags=player_data['Position'])
