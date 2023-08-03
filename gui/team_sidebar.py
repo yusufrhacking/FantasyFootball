@@ -48,6 +48,7 @@ class TeamSidebar:
         self.add_player_to_team(drafted_player)
         self.update_drafter_order()
         self.current_drafter_label.config(text=self.current_drafter_text())
+        self.update_team_display()
 
     def add_player_to_team(self, player_data):
         current_team = self.draft_order[self.current_drafter_index]
