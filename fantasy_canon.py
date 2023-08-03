@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from gui.draft_page import DraftPageApp
+from draft.draft_page import DraftPageApp
 from gui.rankings_app import PositionalRankingsApp
 
 
