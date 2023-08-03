@@ -1,9 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
 
+from gui.team_sidebar import TeamSidebar
+
 
 class DraftPageApp:
     def __init__(self, root, par_table):
+        self.bottom_frame = None
         self.par_table = par_table
         root.title("Fantasy Draft Page")
         root.geometry("1200x800")
@@ -11,6 +14,10 @@ class DraftPageApp:
 
         self.create_top_frame(root)
         self.create_bottom_frame(root)
+
+        side_frame = ttk.Frame(self.bottom_frame, padding="20")
+        side_frame.grid(row=0, column=1, sticky="nsew")
+        self.team_sidebar = TeamSidebar(side_frame, self.draft_player)
 
     def create_top_frame(self, root):
         top_frame = ttk.Frame(root, padding="10")
@@ -28,15 +35,15 @@ class DraftPageApp:
         instruction_label.pack(side="top", padx=5)
 
     def create_bottom_frame(self, root):
-        bottom_frame = ttk.Frame(root, padding="10")
-        bottom_frame.pack(side="top", fill="both", expand=True)
-        self.tree = self.create_tree(bottom_frame)
+        self.bottom_frame = ttk.Frame(root, padding="10")
+        self.bottom_frame.pack(side="top", fill="both", expand=True)
+        self.tree = self.create_tree(self.bottom_frame)
         self.tree.grid(row=0, column=0, sticky="nsew")
-        self.create_side_frame(bottom_frame)
+        self.create_side_frame(self.bottom_frame)
 
-        bottom_frame.grid_columnconfigure(0, weight=3)
-        bottom_frame.grid_columnconfigure(1, weight=1)
-        bottom_frame.grid_rowconfigure(0, weight=1)
+        self.bottom_frame.grid_columnconfigure(0, weight=3)
+        self.bottom_frame.grid_columnconfigure(1, weight=1)
+        self.bottom_frame.grid_rowconfigure(0, weight=1)
 
     def create_side_frame(self, bottom_frame):
         side_frame = ttk.Frame(bottom_frame, padding="20")
@@ -75,10 +82,10 @@ class DraftPageApp:
 
     def apply_row_colors(self, tree):
         colors = {
-            'QB': '#1D5B79',  # Light Red
-            'RB': '#468B97',  # Light Green
-            'WR': '#EF6262',  # Light Blue
-            'TE': '#F3AA60',  # Light Orange
+            'QB': '#1D5B79',
+            'RB': '#468B97',
+            'WR': '#EF6262',
+            'TE': '#F3AA60',
         }
 
         for position, color in colors.items():
@@ -90,9 +97,14 @@ class DraftPageApp:
         tree.configure(yscrollcommand=scrollbar.set)
 
     def draft_player(self):
-        # Code to handle drafting the selected player
-        pass
+        selected_item = self.tree.selection()[0]
+        player_data = self.tree.item(selected_item)['values']
+        self.team_sidebar.add_player(player_data)
+        self.tree.delete(selected_item)
 
     def remove_player(self):
-        # Code to handle removing the selected player
-        pass
+        selected_index = self.team_sidebar.get_selected_index()
+        player_data = self.team_sidebar.drafted_players[selected_index]
+        self.team_sidebar.remove_player(selected_index)
+        self.tree.insert("", tk.END, values=player_data, tags=player_data['Position'])
+
