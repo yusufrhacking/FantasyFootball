@@ -17,7 +17,7 @@ class DraftPageApp:
 
         side_frame = ttk.Frame(self.bottom_frame, padding="20")
         side_frame.grid(row=0, column=1, sticky="nsew")
-        self.team_sidebar = TeamSidebar(side_frame, self.draft_player, config['position_requirements'])
+        self.team_sidebar = TeamSidebar(side_frame, self.draft_player, config)
 
     def create_top_frame(self, root):
         top_frame = ttk.Frame(root, padding="10")
