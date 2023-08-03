@@ -2,6 +2,7 @@
     "number_of_teams": 16,
     "position_requirements": {
         "QB": 1,
-        "FLEX": 6
+        "FLEX": 6,
+        "BENCH": 6
     }
 }
