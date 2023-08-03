@@ -54,7 +54,7 @@ class RankingsProcessor:
         desired_columns = ['Ranking', 'Player', 'Position', 'PAR']
         par_table = par_table.loc[:, desired_columns]
 
-        par_table = par_table.sort_values(by='PAR', ascending=False)
+        par_table = par_table.sort_values(by='PAR', ascending=False).reset_index(drop=True)
 
         par_table['Ranking'] = par_table['PAR'].rank(ascending=False, method='first').astype(int)
 
