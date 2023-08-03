@@ -26,6 +26,12 @@ def get_df(csv_files, pff_projections_path):
     return result_df
 
 
+def create_ranking_df(sorted_df, positions):
+    df = filter_by_position(sorted_df, positions)
+    df['Ranking'] = range(len(df))
+    return df[['Ranking', 'Player', 'Position', 'Avg Proj Pts', 'Fantasy Life Projections', 'PFF Projections']]
+
+
 def get_players(merged_df, positions=None):
     if positions is None:
         positions = ['QB', 'RB', 'WR', 'TE']
@@ -33,14 +39,10 @@ def get_players(merged_df, positions=None):
     position_dfs = {}
 
     for pos in positions:
-        df = filter_by_position(sorted_df, [pos])
-        df['Ranking'] = range(len(df))
-        df = df[['Ranking', 'Player', 'Position', 'Avg Proj Pts', 'Fantasy Life Projections', 'PFF Projections']]
-        position_dfs[pos] = df
+        position_dfs[pos] = create_ranking_df(sorted_df, [pos])
 
-    flex_df = pd.concat([position_dfs['RB'], position_dfs['WR'], position_dfs['TE']])
-    flex_df = sort_by_projected_points(flex_df).reset_index(drop=True)
-    flex_df['Ranking'] = range(len(flex_df))
-    position_dfs['FLEX'] = flex_df
+    position_dfs['FLEX'] = create_ranking_df(sorted_df, ['RB', 'WR', 'TE'])
+
+    position_dfs['OVR'] = create_ranking_df(sorted_df, ['QB', 'RB', 'WR', 'TE'])
 
     return position_dfs

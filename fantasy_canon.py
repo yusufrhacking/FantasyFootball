@@ -6,7 +6,7 @@ from gui.rankings_app import PositionalRankingsApp
 class FantasyCanonApp:
     def __init__(self, root):
         root.title("Fantasy Canon")
-        root.geometry("300x200")
+        root.geometry("1000x700")
 
         button = tk.Button(root, text="Open Positional Rankings", command=self.open_positional_rankings)
         button.pack(pady=20)
