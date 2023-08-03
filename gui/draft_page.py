@@ -22,6 +22,18 @@ class DraftPageApp:
         side_frame.grid(row=0, column=1, sticky="nsew")
         self.team_sidebar = TeamSidebar(side_frame, self.draft_player, config)
 
+        self.create_banner(root)
+
+
+    def create_banner(self, root):
+        self.banner_label = ttk.Label(root, text=self.get_next_teams_text(), font=("Helvetica", 14),
+                                      background="lightblue")
+        self.banner_label.pack(side="top", fill="both", padx=5, pady=5)
+
+    def get_next_teams_text(self):
+        next_teams = self.team_sidebar.get_next_teams(10)  # Get the next 10 teams
+        return "Next teams to draft: " + ", ".join(next_teams)
+
     def create_top_frame(self, root):
         top_frame = ttk.Frame(root, padding="10")
         top_frame.pack(side="top", fill="both", expand=False)
@@ -84,5 +96,6 @@ class DraftPageApp:
         selected_item = self.tree.selection()[0]
         player_data = self.tree.item(selected_item)['values']
         self.tree.delete(selected_item)
+        self.banner_label.config(text=self.get_next_teams_text())  # Update the banner
         return player_data
 

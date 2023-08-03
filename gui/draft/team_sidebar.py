@@ -55,6 +55,17 @@ class TeamSidebar:
         self.team_combobox.current(self.current_drafter_index)
         self.update_team_display()
 
+    def get_next_teams(self, num_teams):
+        next_teams = []
+        index = self.current_drafter_index
+        for _ in range(num_teams):
+            next_teams.append(self.draft_order[index])
+            index += self.snake_direction
+            if index >= len(self.draft_order) or index < 0:
+                self.snake_direction *= -1
+                index += self.snake_direction
+        return next_teams
+
     def update_drafter_order(self):
         self.current_drafter_index += self.snake_direction
         self.current_overall_pick += 1
