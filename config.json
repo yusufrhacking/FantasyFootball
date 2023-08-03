@@ -4,5 +4,9 @@
         "QB": 1,
         "FLEX": 6,
         "BENCH": 6
-    }
+    },
+    "draft_order" : [
+        "MAX", "SAM", "HEMA", "DEAN", "YUSUF", "BOBBY", "RICHIE", "LeJack",
+        "JACK", "HOLUBOWSKI", "MADELINE", "TUCKER", "NOAH", "VENCHI", "AKIN", "UNCLE"
+    ]
 }
