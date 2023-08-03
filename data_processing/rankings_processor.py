@@ -11,7 +11,6 @@ class RankingsProcessor:
         return in_use_players
 
     def find_replacement_level_players(self):
-        """Finds the replacement level player for each position."""
         in_use_players = self.calculate_in_use_players()
 
         replacement_players = {}
@@ -32,4 +31,32 @@ class RankingsProcessor:
 
         return replacement_players
 
+    def calculate_par_table(self):
+        # Calculate the replacement level points for each position
+        replacement_level_points = {}
+        for position, player in self.find_replacement_level_players().items():
+            replacement_level_points[position] = player['Avg Proj Pts'] if player is not None else 0
+
+        # Special handling for FLEX: use the same replacement level points for RB, WR, and TE
+        flex_replacement_level = replacement_level_points['FLEX']
+        replacement_level_points['RB'] = flex_replacement_level
+        replacement_level_points['WR'] = flex_replacement_level
+        replacement_level_points['TE'] = flex_replacement_level
+
+        # Calculate PAR for each player
+        self.overall_rankings['PAR'] = self.overall_rankings.apply(
+            lambda row: row['Avg Proj Pts'] - replacement_level_points.get(row['Position'], 0),
+            axis=1
+        )
+
+        par_table = self.overall_rankings[self.overall_rankings['Position'].isin(['QB', 'RB', 'WR', 'TE'])]
+
+        desired_columns = ['Ranking', 'Player', 'Position', 'PAR']
+        par_table = par_table.loc[:, desired_columns]
+
+        par_table = par_table.sort_values(by='PAR', ascending=False)
+
+        par_table['Ranking'] = par_table['PAR'].rank(ascending=False, method='first').astype(int)
+
+        return par_table
 

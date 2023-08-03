@@ -16,7 +16,7 @@ def main():
 
     overall_ranking_dfs = players_data['OVR']
     rankings_processor = RankingsProcessor(overall_ranking_dfs, position_requirements, number_of_teams)
-    replacement_level_players = rankings_processor.find_replacement_level_players()
+    par_table = rankings_processor.calculate_par_table()
 
     position_separated_dfs = [(df, position) for position, df in players_data.items()]
 
