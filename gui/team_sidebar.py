@@ -6,17 +6,40 @@ class TeamSidebar:
     def __init__(self, parent, draft_callback, config):
         self.drafted_players = {}
         self.position_requirements = config['position_requirements']
+        self.draft_order = config['draft_order']
+        self.current_drafter_index = 0
+        self.snake_direction = 1  # 1 for forward, -1 for reverse (snaking back)
 
-        self.init_ui(parent, draft_callback)
+        self.init_UI(parent, draft_callback)
 
-    def init_ui(self, parent, draft_callback):
+    def init_UI(self, parent, draft_callback):
+        self.current_drafter_label = ttk.Label(parent, text=self.current_drafter_text(), font=("Helvetica", 16))
+        self.current_drafter_label.pack(pady=10)
+
         my_team_label = ttk.Label(parent, text="My Team", font=("Helvetica", 16))
         my_team_label.pack(pady=10)
-        self.draft_button = ttk.Button(parent, text="Draft Player", command=draft_callback)
+
+        self.draft_button = ttk.Button(parent, text="Draft Player", command=lambda: self.handle_draft(draft_callback))
         self.draft_button.pack(pady=10)
 
         self.player_labels = []
         self.create_positions(parent, "BENCH")
+
+    def current_drafter_text(self):
+        return f"Up to draft: {self.draft_order[self.current_drafter_index]}"
+
+    def handle_draft(self, draft_callback):
+        if self.draft_order[self.current_drafter_index] == "ME":
+            draft_callback()
+
+        self.update_drafter_order()
+        self.current_drafter_label.config(text=self.current_drafter_text())
+
+    def update_drafter_order(self):
+        self.current_drafter_index += self.snake_direction
+        if self.current_drafter_index >= len(self.draft_order) or self.current_drafter_index < 0:
+            self.snake_direction *= -1
+            self.current_drafter_index += self.snake_direction * 2
 
     def create_positions(self, parent, exclude_position):
         for position, count in self.position_requirements.items():
