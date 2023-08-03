@@ -4,7 +4,6 @@ import pandas as pd
 from data_processing.data_manager import get_players, get_df
 from data_processing.fantasy_life_csv_processing import get_fantasy_life_csvs
 
-
 def is_database_empty(conn):
     cursor = conn.cursor()
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
@@ -18,7 +17,7 @@ def write_to_sqlite(players_dfs, conn):
 
 
 def read_from_sqlite(conn):
-    positions = ["QB", "RB", "WR", "TE", "FLEX"]
+    positions = ["OVR", "QB", "RB", "WR", "TE", "FLEX"]
     players_dfs = {}
 
     for position in positions:
@@ -37,9 +36,11 @@ def get_players_data():
     csv_files = get_fantasy_life_csvs()
     total_df = get_df(csv_files, pff_projections_path)
 
-    write_to_sqlite(get_players(total_df), conn)
-
-    players_data = read_from_sqlite(conn)
+    data_frames = get_players(total_df)
+    # write_to_sqlite(data_frames, conn)
+    #
+    # players_data = read_from_sqlite(conn)
     conn.close()
 
+    players_data = data_frames
     return players_data
