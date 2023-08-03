@@ -11,6 +11,8 @@ class TeamSidebar:
         self.all_teams_drafted_players = {team: [] for team in self.draft_order}
         self.current_drafter_index = 0
         self.snake_direction = 1
+        self.current_round = 1
+        self.current_overall_pick = 1
 
         self.init_ui(parent, draft_callback)
 
@@ -39,7 +41,9 @@ class TeamSidebar:
             self.player_display.add_player_to_gui(player_data)
 
     def current_drafter_text(self):
-        return f"Up to draft: {self.draft_order[self.current_drafter_index]}"
+        text = f"Round {self.current_round}, Pick #{self.current_drafter_index+1}\nOverall: #{self.current_overall_pick}\n"
+        text += f"Up to draft: {self.draft_order[self.current_drafter_index]}"
+        return text
 
     def handle_draft(self, draft_callback):
         drafted_player = draft_callback()
@@ -53,6 +57,8 @@ class TeamSidebar:
 
     def update_drafter_order(self):
         self.current_drafter_index += self.snake_direction
+        self.current_overall_pick += 1
         if self.current_drafter_index >= len(self.draft_order) or self.current_drafter_index < 0:
+            self.current_round += 1
             self.snake_direction *= -1
             self.current_drafter_index += self.snake_direction
