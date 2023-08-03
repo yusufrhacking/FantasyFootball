@@ -1,7 +1,6 @@
-import tkinter as tk
 from tkinter import ttk
 
-from gui.team_sidebar import TeamSidebar
+from gui.draft.team_sidebar import TeamSidebar
 
 
 class DraftPageApp:
