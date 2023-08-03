@@ -5,7 +5,7 @@ from gui.team_sidebar import TeamSidebar
 
 
 class DraftPageApp:
-    def __init__(self, root, par_table):
+    def __init__(self, root, par_table, config):
         self.bottom_frame = None
         self.par_table = par_table
         root.title("Fantasy Draft Page")
@@ -17,7 +17,7 @@ class DraftPageApp:
 
         side_frame = ttk.Frame(self.bottom_frame, padding="20")
         side_frame.grid(row=0, column=1, sticky="nsew")
-        self.team_sidebar = TeamSidebar(side_frame, self.draft_player)
+        self.team_sidebar = TeamSidebar(side_frame, self.draft_player, config['position_requirements'])
 
     def create_top_frame(self, root):
         top_frame = ttk.Frame(root, padding="10")
@@ -99,6 +99,7 @@ class DraftPageApp:
     def draft_player(self):
         selected_item = self.tree.selection()[0]
         player_data = self.tree.item(selected_item)['values']
+        position = player_data[1]  # Assuming the position is at index 1
         self.team_sidebar.add_player(player_data)
         self.tree.delete(selected_item)
 
@@ -107,4 +108,3 @@ class DraftPageApp:
         player_data = self.team_sidebar.drafted_players[selected_index]
         self.team_sidebar.remove_player(selected_index)
         self.tree.insert("", tk.END, values=player_data, tags=player_data['Position'])
-

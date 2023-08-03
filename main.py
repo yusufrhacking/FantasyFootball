@@ -20,7 +20,7 @@ def main():
 
     position_separated_dfs = [(df, position) for position, df in players_data.items()]
 
-    app = FantasyCanonApp(root, par_table, position_separated_dfs)
+    app = FantasyCanonApp(root, par_table, position_separated_dfs, config)
     root.mainloop()
 
 

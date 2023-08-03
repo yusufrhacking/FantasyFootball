@@ -5,10 +5,23 @@ from data_processing.fantasy_life_csv_processing import get_fantasy_life_csvs, p
 from data_processing.pff_csv_processing import read_pff_csv
 
 
+def standardize_name(name):
+    # Remove any periods
+    name_without_periods = name.replace('.', '')
+    # Split the name by whitespace, take the first two parts if they exist, and join them back together
+    return ' '.join(name_without_periods.split()[:2])
+
+
 def get_df(csv_files, pff_projections_path):
     temp_dfs = [parse_fantasy_life_csv(file) for file in csv_files if parse_fantasy_life_csv(file) is not None]
+
+    for df in temp_dfs:
+        df['Player'] = df['Player'].apply(standardize_name)
+
     fantasy_life_dfs = merge_dfs(temp_dfs)
     pff_dfs = read_pff_csv(pff_projections_path)
+    pff_dfs['playerName'] = pff_dfs['playerName'].apply(
+        standardize_name)  # Standardize the names in the pff DataFrame as well
 
     merged_df = pd.merge(fantasy_life_dfs, pff_dfs, left_on='Player', right_on='playerName', how='left',
                          suffixes=('_fl', '_pff'))
@@ -31,7 +44,6 @@ def create_ranking_df(sorted_df, positions):
     df.reset_index(drop=True, inplace=True)
     df['Ranking'] = df.index
     return df[['Ranking', 'Player', 'Position', 'Avg Proj Pts', 'Fantasy Life Projections', 'PFF Projections']]
-
 
 
 def get_players(merged_df, positions=None):
