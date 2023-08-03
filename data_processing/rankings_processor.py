@@ -43,6 +43,8 @@ class RankingsProcessor:
         replacement_level_points['WR'] = flex_replacement_level
         replacement_level_points['TE'] = flex_replacement_level
 
+        print("Replacement level players: ", self.find_replacement_level_players())
+
         # Calculate PAR for each player
         self.overall_rankings['PAR'] = self.overall_rankings.apply(
             lambda row: row['Avg Proj Pts'] - replacement_level_points.get(row['Position'], 0),
