@@ -86,7 +86,7 @@ class DraftPageApp:
     def draft_player(self):
         selected_item = self.tree.selection()[0]
         player_data = self.tree.item(selected_item)['values']
-        position = player_data[1]  # Assuming the position is at index 1
-        self.team_sidebar.add_player(player_data)
+        # self.team_sidebar.add_player(player_data)
         self.tree.delete(selected_item)
+        return player_data
 

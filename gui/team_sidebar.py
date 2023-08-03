@@ -4,9 +4,9 @@ from tkinter import ttk
 
 class TeamSidebar:
     def __init__(self, parent, draft_callback, config):
-        self.drafted_players = {}
         self.position_requirements = config['position_requirements']
         self.draft_order = config['draft_order']
+        self.all_teams_drafted_players = {team: [] for team in self.draft_order}
         self.current_drafter_index = 0
         self.snake_direction = 1  # 1 for forward, -1 for reverse (snaking back)
 
@@ -29,11 +29,24 @@ class TeamSidebar:
         return f"Up to draft: {self.draft_order[self.current_drafter_index]}"
 
     def handle_draft(self, draft_callback):
-        if self.draft_order[self.current_drafter_index] == "ME":
-            draft_callback()
-
+        drafted_player = draft_callback()  # assuming draft_callback returns the drafted player data
+        self.add_player_to_team(drafted_player)
         self.update_drafter_order()
         self.current_drafter_label.config(text=self.current_drafter_text())
+
+    def add_player_to_team(self, player_data):
+        current_team = self.draft_order[self.current_drafter_index]
+        self.all_teams_drafted_players[current_team].append(player_data)
+
+        # If the current team is "ME", update the GUI
+        if current_team == "ME":
+            self.add_player_to_gui(player_data)
+
+    def add_player_to_gui(self, player_data):
+        player, position, par = player_data[1], player_data[2], player_data[3]
+        target_pos = self.determine_target_position(position)
+        self.update_player_label(target_pos, f'{player} ({position}) - {par} PAR')
+        # self.update_drafted_players(target_pos, player_data)
 
     def update_drafter_order(self):
         self.current_drafter_index += self.snake_direction
@@ -60,11 +73,7 @@ class TeamSidebar:
         player_label.pack(side=tk.LEFT)
         self.player_labels.append((position, player_label))
 
-    def add_player(self, player_data):
-        player, position, par = player_data[1], player_data[2], player_data[3]
-        target_pos = self.determine_target_position(position)
-        self.update_player_label(target_pos, f'{player} ({position}) - {par} PAR')
-        self.update_drafted_players(target_pos, player_data)
+
 
     def remove_player(self, player_data):
         player, position, par = player_data[1], player_data[2], player_data[3]
@@ -93,14 +102,14 @@ class TeamSidebar:
                 label.config(text=text)
                 break
 
-    def update_drafted_players(self, target_pos, player_data, add=True):
-        if target_pos not in self.drafted_players:
-            self.drafted_players[target_pos] = []
-
-        if add:
-            self.drafted_players[target_pos].append(player_data)
-        else:
-            self.drafted_players[target_pos].remove(player_data)
+    # def update_drafted_players(self, target_pos, player_data, add=True):
+    #     if target_pos not in self.drafted_players:
+    #         self.drafted_players[target_pos] = []
+    #
+    #     if add:
+    #         self.drafted_players[target_pos].append(player_data)
+    #     else:
+    #         self.drafted_players[target_pos].remove(player_data)
 
     def get_target_position_for_removal(self, target_text):
         for pos, label in self.player_labels:
