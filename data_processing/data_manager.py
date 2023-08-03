@@ -27,9 +27,11 @@ def get_df(csv_files, pff_projections_path):
 
 
 def create_ranking_df(sorted_df, positions):
-    df = filter_by_position(sorted_df, positions)
-    df['Ranking'] = range(len(df))
+    df = filter_by_position(sorted_df, positions).copy()  # Make a copy after filtering
+    df.reset_index(drop=True, inplace=True)
+    df['Ranking'] = df.index
     return df[['Ranking', 'Player', 'Position', 'Avg Proj Pts', 'Fantasy Life Projections', 'PFF Projections']]
+
 
 
 def get_players(merged_df, positions=None):
