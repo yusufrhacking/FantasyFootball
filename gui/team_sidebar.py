@@ -10,9 +10,9 @@ class TeamSidebar:
         self.current_drafter_index = 0
         self.snake_direction = 1  # 1 for forward, -1 for reverse (snaking back)
 
-        self.init_UI(parent, draft_callback)
+        self.init_ui(parent, draft_callback)
 
-    def init_UI(self, parent, draft_callback):
+    def init_ui(self, parent, draft_callback):
         self.current_drafter_label = ttk.Label(parent, text=self.current_drafter_text(), font=("Helvetica", 16))
         self.current_drafter_label.pack(pady=10)
 
@@ -46,13 +46,12 @@ class TeamSidebar:
         player, position, par = player_data[1], player_data[2], player_data[3]
         target_pos = self.determine_target_position(position)
         self.update_player_label(target_pos, f'{player} ({position}) - {par} PAR')
-        # self.update_drafted_players(target_pos, player_data)
 
     def update_drafter_order(self):
         self.current_drafter_index += self.snake_direction
         if self.current_drafter_index >= len(self.draft_order) or self.current_drafter_index < 0:
             self.snake_direction *= -1
-            self.current_drafter_index += self.snake_direction * 2
+            self.current_drafter_index += self.snake_direction
 
     def create_positions(self, parent, exclude_position):
         for position, count in self.position_requirements.items():
@@ -101,15 +100,6 @@ class TeamSidebar:
             if pos == target_pos and label.cget('text') == "[ ]":
                 label.config(text=text)
                 break
-
-    # def update_drafted_players(self, target_pos, player_data, add=True):
-    #     if target_pos not in self.drafted_players:
-    #         self.drafted_players[target_pos] = []
-    #
-    #     if add:
-    #         self.drafted_players[target_pos].append(player_data)
-    #     else:
-    #         self.drafted_players[target_pos].remove(player_data)
 
     def get_target_position_for_removal(self, target_text):
         for pos, label in self.player_labels:
