@@ -57,32 +57,37 @@ class DraftPageApp:
         tree["columns"] = list(self.par_table.columns)
         tree["show"] = "headings"
 
-        # Create the columns with improved aesthetics
+        self.create_columns(tree)
+        self.insert_rows(tree)
+        self.apply_row_colors(tree)
+        self.add_scrollbar(tree, root)
+
+        return tree
+
+    def create_columns(self, tree):
         for col in self.par_table.columns:
             tree.heading(col, text=col)
             tree.column(col, width=100)
 
+    def insert_rows(self, tree):
+        for index, row in self.par_table.iterrows():
+            tree.insert("", index, values=list(row), tags=row['Position'])
+
+    def apply_row_colors(self, tree):
         colors = {
             'QB': '#1D5B79',  # Light Red
             'RB': '#468B97',  # Light Green
             'WR': '#EF6262',  # Light Blue
             'TE': '#F3AA60',  # Light Orange
         }
-        # Insert the rows with position-based colors
-        for index, row in self.par_table.iterrows():
-            color = colors.get(row['Position'], '#ffffff')  # Default White
-            tree.insert("", index, values=list(row), tags=row['Position'])
 
-        # Apply the position-based colors
         for position, color in colors.items():
             tree.tag_configure(position, background=color)
 
-        # Adding a scrollbar
+    def add_scrollbar(self, tree, root):
         scrollbar = ttk.Scrollbar(root, orient="vertical", command=tree.yview)
         scrollbar.grid(row=0, column=1, sticky='ns')
         tree.configure(yscrollcommand=scrollbar.set)
-
-        return tree
 
     def draft_player(self):
         # Code to handle drafting the selected player
