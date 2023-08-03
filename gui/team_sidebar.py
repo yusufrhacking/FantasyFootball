@@ -16,14 +16,29 @@ class TeamSidebar:
         self.current_drafter_label = ttk.Label(parent, text=self.current_drafter_text(), font=("Helvetica", 16))
         self.current_drafter_label.pack(pady=10)
 
-        my_team_label = ttk.Label(parent, text="My Team", font=("Helvetica", 16))
-        my_team_label.pack(pady=10)
-
         self.draft_button = ttk.Button(parent, text="Draft Player", command=lambda: self.handle_draft(draft_callback))
         self.draft_button.pack(pady=10)
 
+        self.team_combobox = ttk.Combobox(parent, values=self.draft_order, font=("Helvetica", 16))
+        self.team_combobox.current(0)  # Set default value to the first team in the list
+        self.team_combobox.pack(pady=10)
+        self.team_combobox.bind("<<ComboboxSelected>>", self.update_team_display)
+
+        # my_team_label = ttk.Label(parent, text="My Team", font=("Helvetica", 16))
+        # my_team_label.pack(pady=10)
+
         self.player_labels = []
         self.create_positions(parent, "BENCH")
+
+    def update_team_display(self, event=None):
+        selected_team = self.team_combobox.get()
+        drafted_players = self.all_teams_drafted_players.get(selected_team, [])
+
+        for _, label in self.player_labels:
+            label.config(text="[ ]")
+
+        for player_data in drafted_players:
+            self.add_player_to_gui(player_data)
 
     def current_drafter_text(self):
         return f"Up to draft: {self.draft_order[self.current_drafter_index]}"
@@ -71,15 +86,6 @@ class TeamSidebar:
         player_label = ttk.Label(frame, text="[ ]", width=40)
         player_label.pack(side=tk.LEFT)
         self.player_labels.append((position, player_label))
-
-
-
-    def remove_player(self, player_data):
-        player, position, par = player_data[1], player_data[2], player_data[3]
-        target_text = f'{player} ({position}) - {par} PAR'
-        target_pos = self.get_target_position_for_removal(target_text)
-        self.update_player_label(target_pos, "[ ]")
-        self.update_drafted_players(target_pos, player_data, add=False)
 
     def determine_target_position(self, position):
         for target_pos in [position, 'FLEX', 'BENCH']:
