@@ -11,6 +11,10 @@ class DraftPageApp:
         root.geometry("1200x800")
         root.configure(bg='#f0f0f0')  # Soft Gray Background
 
+        style = ttk.Style(root)
+        style.theme_use("clam")
+        style.configure("TFrame", background="lightgray")
+
         self.create_top_frame(root)
         self.create_bottom_frame(root)
 
@@ -22,16 +26,10 @@ class DraftPageApp:
         top_frame = ttk.Frame(root, padding="10")
         top_frame.pack(side="top", fill="both", expand=False)
         self.add_title(top_frame)
-        self.add_instruction(top_frame)
 
     def add_title(self, frame):
         title_label = ttk.Label(frame, text="Fantasy Draft", font=("Helvetica", 24), foreground="#333333")
         title_label.pack(side="top", padx=5)
-
-    def add_instruction(self, frame):
-        instruction_label = ttk.Label(frame, text="Select players for your draft.", font=("Helvetica", 14),
-                                      foreground="#555555")
-        instruction_label.pack(side="top", padx=5)
 
     def create_bottom_frame(self, root):
         self.bottom_frame = ttk.Frame(root, padding="10")
@@ -85,7 +83,6 @@ class DraftPageApp:
     def draft_player(self):
         selected_item = self.tree.selection()[0]
         player_data = self.tree.item(selected_item)['values']
-        # self.team_sidebar.add_player(player_data)
         self.tree.delete(selected_item)
         return player_data
 
