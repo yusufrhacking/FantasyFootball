@@ -7,10 +7,10 @@ class DraftPageApp:
         self.par_table = par_table
         root.title("Draft Page")
         root.geometry("1200x800")
-        root.configure(bg='lightgray')
+        root.configure(bg='#f0f0f0')  # Soft background color to complement the row colors
 
         # Top Frame to house the title and brief instructions
-        top_frame = ttk.Frame(root, padding="10")
+        top_frame = ttk.Frame(root, padding="10", style='TFrame')
         top_frame.pack(side="top", fill="both", expand=False)
         title_label = ttk.Label(top_frame, text="Fantasy Draft", font=("Helvetica", 20))
         title_label.pack(side="left", padx=5)
@@ -18,7 +18,7 @@ class DraftPageApp:
         instruction_label.pack(side="left", padx=5)
 
         # Bottom Frame for Treeview and Action buttons
-        bottom_frame = ttk.Frame(root, padding="10")
+        bottom_frame = ttk.Frame(root, padding="10", style='TFrame')
         bottom_frame.pack(side="top", fill="both", expand=True)
 
         # Treeview to display the PAR table
@@ -26,7 +26,7 @@ class DraftPageApp:
         self.tree.grid(row=0, column=0, sticky="nsew")
 
         # Side frame for buttons and additional controls
-        side_frame = ttk.Frame(bottom_frame)
+        side_frame = ttk.Frame(bottom_frame, style='TFrame')
         side_frame.grid(row=0, column=1, sticky="nsew")
 
         # Button to add a player to the draft
@@ -42,6 +42,14 @@ class DraftPageApp:
         bottom_frame.grid_columnconfigure(1, weight=1)
         bottom_frame.grid_rowconfigure(0, weight=1)
 
+        # Styling
+        style = ttk.Style()
+        style.theme_use('default')
+        style.configure('TFrame', background='#f0f0f0')  # Match frame background with root background
+        style.configure('TButton', background='#d9d9d9')  # Soft color for buttons
+
+    # Rest of your code (create_tree, draft_player, remove_player)
+
     def create_tree(self, root):
         tree = ttk.Treeview(root, selectmode="browse")
         tree["columns"] = list(self.par_table.columns)
@@ -52,9 +60,21 @@ class DraftPageApp:
             tree.heading(col, text=col)
             tree.column(col, width=100)
 
-        # Insert the rows
+        # Define colors for different positions
+        position_colors = {
+            'QB': '#a6cee3',
+            'RB': '#1f78b4',
+            'WR': '#b2df8a',
+            'TE': '#33a02c',
+            'FLEX': '#fb9a99'
+        }
+
+        # Insert the rows with colors based on the position
         for index, row in self.par_table.iterrows():
-            tree.insert("", index, values=list(row))
+            position = row['Position']
+            color = position_colors.get(position, 'white')  # Default to white if position is not found
+            tree.insert("", index, values=list(row), tags=(position,))
+            tree.tag_configure(position, background=color)
 
         # Adding a scrollbar
         scrollbar = ttk.Scrollbar(root, orient="vertical", command=tree.yview)
