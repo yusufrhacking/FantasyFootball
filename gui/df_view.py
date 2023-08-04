@@ -4,7 +4,7 @@ import pandas as pd
 
 
 class DataFrameView:
-    def __init__(self, container, df, title):
+    def __init__(self, container, df, title=""):
         self.container = ttk.Frame(container)
         self.container.grid(row=0, column=0, sticky="nsew")
         self._add_header(title)

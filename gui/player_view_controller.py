@@ -11,4 +11,4 @@ class PlayerController:
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
-        frame = PlayerDFView(container, df)
+        frame = DataFrameView(container, df)

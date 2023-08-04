@@ -13,5 +13,5 @@ class FrameController:
 
         self.frames = {}
         for df, title in df_title_pairs:
-            frame = PlayerDFView(container, df, title)
+            frame = DataFrameView(container, df, title)
             self.frames[title] = frame.container

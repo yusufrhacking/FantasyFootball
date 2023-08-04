@@ -5,29 +5,46 @@ import pandas as pd
 
 class PlayerDFView:
     def __init__(self, container, df, title=""):
-        self.container = ttk.Frame(container)
-        self.container.grid(row=0, column=0, sticky="nsew")
-        self._add_header(title)
-        self._create_tree_view(df)
-        self._populate_tree_view(df)
+        self.container = ttk.Frame(container, padding="10")
+        # self.container.grid(row=0, column=0, sticky="nsew")
+        self.df = df
+        self.create_bottom_frame(container)
 
     def _add_header(self, title):
         header_label = ttk.Label(self.container, text=title, font=('Helvetica', 16, 'bold'))
         header_label.pack(side=tk.TOP, pady=10, padx=20)
 
-    def _create_tree_view(self, df):
-        columns = tuple(df.columns)
-        self.tree = ttk.Treeview(self.container, columns=columns, show="headings")
-        self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
+    def create_bottom_frame(self, root):
+        self.bottom_frame = ttk.Frame(root, padding="10")
+        self.bottom_frame.pack(side="top", fill="both", expand=True)
+        self.tree = self.create_tree(self.bottom_frame)
+        self.tree.grid(row=0, column=0, sticky="nsew")
 
-        for col in columns:
-            self.tree.heading(col, text=col)
-            self.tree.column(col, width=100)
+        self.bottom_frame.grid_columnconfigure(0, weight=3)
+        self.bottom_frame.grid_columnconfigure(1, weight=1)
+        self.bottom_frame.grid_rowconfigure(0, weight=1)
 
-        scrollbar = ttk.Scrollbar(self.container, orient="vertical", command=self.tree.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        self.tree.configure(yscrollcommand=scrollbar.set)
+    def create_tree(self, root):
+        tree = ttk.Treeview(root, selectmode="browse")
+        tree["columns"] = list(self.df.columns)
+        tree["show"] = "headings"
 
-    def _populate_tree_view(self, df):
-        for index, row in df.iterrows():
-            self.tree.insert("", tk.END, values=tuple(row))
+        self.create_columns(tree)
+        self.insert_rows(tree)
+        self.add_scrollbar(tree, root)
+
+        return tree
+
+    def create_columns(self, tree):
+        for col in self.df.columns:
+            tree.heading(col, text=col)
+            tree.column(col, width=100)
+
+    def insert_rows(self, tree):
+        for index, row in self.df.iterrows():
+            tree.insert("", index, values=list(row), tags=row['Position'])
+
+    def add_scrollbar(self, tree, root):
+        scrollbar = ttk.Scrollbar(root, orient="vertical", command=tree.yview)
+        scrollbar.grid(row=0, column=1, sticky='ns')
+        tree.configure(yscrollcommand=scrollbar.set)
