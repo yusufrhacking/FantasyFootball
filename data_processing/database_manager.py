@@ -1,7 +1,7 @@
 import sqlite3
 import pandas as pd
 
-from data_processing.data_manager import get_players, get_df
+from data_processing.data_manager import get_players, run_data_pipeline
 from data_processing.fantasy_life_csv_processing import get_fantasy_life_csvs
 
 def is_database_empty(conn):
@@ -31,10 +31,7 @@ def read_from_sqlite(conn):
 
 def get_players_data():
     conn = sqlite3.connect('/Users/yusufhacking/Documents/Projects/FantasyFootball/data/fantasy_football.sqlite3')
-    pff_projections_path = "/Users/yusufhacking/Documents/Projects/FantasyFootball/data/pff_projs/pff_all_projections.csv"
-
-    csv_files = get_fantasy_life_csvs()
-    total_df = get_df(csv_files, pff_projections_path)
+    total_df = run_data_pipeline()
 
     data_frames = get_players(total_df)
     # write_to_sqlite(data_frames, conn)

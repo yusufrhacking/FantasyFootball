@@ -1,40 +1,41 @@
 import pandas as pd
 
-from data_processing.fantasy_life_csv_processing import get_fantasy_life_csvs, parse_fantasy_life_csv, merge_dfs, \
-    sort_by_projected_points, filter_by_position
+from data_processing.adp_processing import read_adp_data
+from data_processing.data_standardizer import standardize_name
+from data_processing.fantasy_life_csv_processing import filter_by_position, get_fantasy_life_dfs
 from data_processing.pff_csv_processing import read_pff_csv
 
-
-def standardize_name(name):
-    # Remove any periods
-    name_without_periods = name.replace('.', '')
-    # Split the name by whitespace, take the first two parts if they exist, and join them back together
-    return ' '.join(name_without_periods.split()[:2])
+pff_projections_path = "/Users/yusufhacking/Documents/Projects/FantasyFootball/data/pff_projs/pff_all_projections.csv"
+adp_path = "/Users/yusufhacking/Documents/Projects/FantasyFootball/data/adp/4for4-adp-table.csv"
 
 
-def get_df(csv_files, pff_projections_path):
-    temp_dfs = [parse_fantasy_life_csv(file) for file in csv_files if parse_fantasy_life_csv(file) is not None]
+def run_data_pipeline():
+    # raw data
+    fantasy_life_df = get_fantasy_life_dfs()
+    pff_df = read_pff_csv(pff_projections_path)
+    adp_df = read_adp_data(adp_path)
 
-    for df in temp_dfs:
-        df['Player'] = df['Player'].apply(standardize_name)
+    fantasy_life_df['Player'] = fantasy_life_df['Player'].apply(standardize_name)
+    pff_df['playerName'] = pff_df['playerName'].apply(standardize_name)
+    adp_df['Player'] = adp_df['Player'].apply(standardize_name)
 
-    fantasy_life_dfs = merge_dfs(temp_dfs)
-    pff_dfs = read_pff_csv(pff_projections_path)
-    pff_dfs['playerName'] = pff_dfs['playerName'].apply(
-        standardize_name)  # Standardize the names in the pff DataFrame as well
-
-    merged_df = pd.merge(fantasy_life_dfs, pff_dfs, left_on='Player', right_on='playerName', how='left',
+    # Merge Fantasy Life DataFrame with PFF DataFrame
+    merged_df = pd.merge(fantasy_life_df, pff_df, left_on='Player', right_on='playerName', how='left',
                          suffixes=('_fl', '_pff'))
-
     merged_df['Proj Pts'] = pd.to_numeric(merged_df['Proj Pts'], errors='coerce')
     merged_df['fantasyPoints'] = pd.to_numeric(merged_df['fantasyPoints'], errors='coerce')
     merged_df['Avg Proj Pts'] = merged_df[['Proj Pts', 'fantasyPoints']].mean(axis=1, skipna=True)
     merged_df['Avg Proj Pts'] = merged_df['Avg Proj Pts'].round(1)
 
-    result_df = merged_df.rename(columns={
+    # Merge the above DataFrame with ADP DataFrame
+    result_df = pd.merge(merged_df, adp_df, on='Player', how='left')
+
+    # Rename columns and select the desired columns
+    result_df = result_df.rename(columns={
         'Proj Pts': 'Fantasy Life Projections',
-        'fantasyPoints': 'PFF Projections'
-    })[['Player', 'Position', 'Avg Proj Pts', 'Fantasy Life Projections', 'PFF Projections']]
+        'fantasyPoints': 'PFF Projections',
+        'Y!': 'ADP_Yahoo'
+    })[['Player', 'Position', 'Avg Proj Pts', 'Fantasy Life Projections', 'PFF Projections', 'ADP_Yahoo']]
 
     return result_df
 
@@ -43,13 +44,19 @@ def create_ranking_df(sorted_df, positions):
     df = filter_by_position(sorted_df, positions).copy()  # Make a copy after filtering
     df.reset_index(drop=True, inplace=True)
     df['Ranking'] = df.index
-    return df[['Ranking', 'Player', 'Position', 'Avg Proj Pts', 'Fantasy Life Projections', 'PFF Projections']]
+    return df[['Ranking', 'Player', 'Position', 'Avg Proj Pts',
+               'Fantasy Life Projections', 'PFF Projections', 'ADP_Yahoo']]
+
+
+def sort_by_projected_points(df, category):
+    df.sort_values(by=category, ascending=False, inplace=True)
+    return df
 
 
 def get_players(merged_df, positions=None):
     if positions is None:
         positions = ['QB', 'RB', 'WR', 'TE']
-    sorted_df = sort_by_projected_points(merged_df)
+    sorted_df = sort_by_projected_points(merged_df, 'Avg Proj Pts')
     position_dfs = {}
 
     for pos in positions:
