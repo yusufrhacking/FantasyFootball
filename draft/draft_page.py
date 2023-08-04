@@ -50,12 +50,12 @@ class DraftPageApp:
         self.bottom_frame.grid_columnconfigure(1, weight=1)
         self.bottom_frame.grid_rowconfigure(0, weight=1)
 
-        self.search_bar.bind('<KeyRelease>', self.update_tree)
-
+        self.search_bar.bind('<KeyRelease>', self.update_tree_on_search)
 
     def create_tree(self, root):
         tree = ttk.Treeview(root, selectmode="browse")
-        tree["columns"] = list(self.draft_manager.get_draftable_players().columns)
+
+        tree["columns"] = list(self.get_df_to_show().columns)
         tree["show"] = "headings"
 
         self.create_columns(tree)
@@ -66,7 +66,7 @@ class DraftPageApp:
 
         return tree
 
-    def update_tree(self, event):
+    def update_tree_on_search(self, event):
         if event.keysym == 'Return':
             self.on_enter(event)
             return
@@ -76,7 +76,7 @@ class DraftPageApp:
 
         first_child = None
 
-        for row in self.draft_manager.get_draftable_players().itertuples():
+        for row in self.get_df_to_show().itertuples():
             if query in str(row).lower():
                 child_id = self.tree.insert("", "end", values=row[1:])
                 if first_child is None:
@@ -86,14 +86,13 @@ class DraftPageApp:
             self.tree.selection_set(first_child)
 
     def create_columns(self, tree):
-        for col in self.draft_manager.get_draftable_players().columns:
+        for col in self.get_df_to_show().columns:
             tree.heading(col, text=col)
             tree.column(col, width=100)
 
     def insert_rows(self, tree):
-        for index, row in self.draft_manager.get_draftable_players().iterrows():
+        for index, row in self.get_df_to_show().iterrows():
             tree.insert("", index, values=list(row), tags=row['Position'])
-
 
     def add_scrollbar(self, tree, root):
         scrollbar = ttk.Scrollbar(root, orient="vertical", command=tree.yview)
@@ -133,3 +132,8 @@ class DraftPageApp:
         player_data = self.draft_player()
         self.draft_manager.draft_player_data(player_data)
         self.team_sidebar.player_was_drafted()
+
+    def get_df_to_show(self):
+        relevant_df = self.draft_manager.get_draftable_players()
+        relevant_df = relevant_df.drop(columns=['Added_PAR_Value'])
+        return relevant_df

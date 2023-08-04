@@ -19,31 +19,6 @@ class DraftManager:
         self.current_round = 1
         self.current_overall_pick = 1
 
-    def add_added_par_value_column(self):
-        sleepers_df = get_sleepers(self.par_table, self.config)
-
-        sleepers_with_added_par_value = sleepers_df[['Player', 'Added_PAR_Value']]
-
-        self.draftable_players = pd.merge(
-            self.draftable_players,
-            sleepers_with_added_par_value,
-            on='Player',
-            how='left'
-        )
-
-        self.draftable_players['Added_PAR_Value'] = self.draftable_players['Added_PAR_Value'].fillna(0)
-
-    def add_color_column(self):
-        self.par_table['color'] = self.par_table.apply(self.calculate_color, axis=1)
-
-    def calculate_color(self, row):
-        # Here, define your logic for determining the color based on the row
-        value = row['some_column']
-        if value > 10:
-            return 'green'
-        else:
-            return 'red'
-
     def get_draftable_players(self):
         return self.draftable_players
 
@@ -88,3 +63,17 @@ class DraftManager:
                 current_index += direction
             next_teams.append(self.teams_in_draft_order[current_index])
         return next_teams
+
+    def add_added_par_value_column(self):
+        sleepers_df = get_sleepers(self.par_table, self.config)
+
+        sleepers_with_added_par_value = sleepers_df[['Player', 'Added_PAR_Value']]
+
+        self.draftable_players = pd.merge(
+            self.draftable_players,
+            sleepers_with_added_par_value,
+            on='Player',
+            how='left'
+        )
+
+        self.draftable_players['Added_PAR_Value'] = self.draftable_players['Added_PAR_Value'].fillna(0)
