@@ -1,7 +1,6 @@
 from tkinter import ttk
 
 from gui.df_view import DataFrameView
-from gui.player_df_view import PlayerDFView
 
 
 class PlayerController:
