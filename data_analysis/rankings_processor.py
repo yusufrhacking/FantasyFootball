@@ -53,7 +53,7 @@ class RankingsProcessor:
 
         par_table = self.overall_rankings[self.overall_rankings['Position'].isin(['QB', 'RB', 'WR', 'TE'])]
 
-        desired_columns = ['Ranking', 'Player', 'Position', 'ADP_Yahoo', 'PAR']
+        desired_columns = ['Ranking', 'Player', 'Position', 'ADP', 'PAR']
         par_table = par_table.loc[:, desired_columns]
 
         par_table['PAR'] = par_table['PAR'].round(1)

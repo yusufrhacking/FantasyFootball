@@ -12,7 +12,7 @@ def get_sleepers(par_table, config):
 
     for index, row in par_table.iterrows():
         par_ranking = row['Ranking']
-        yahoo_adp = row['ADP_Yahoo']
+        yahoo_adp = row['ADP']
         player_par = row['PAR']
 
         if yahoo_adp == "-":

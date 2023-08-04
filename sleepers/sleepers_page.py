@@ -1,7 +1,7 @@
 from tkinter import ttk
 import tkinter as tk
 
-from data_processing.sleepers_processor import get_sleepers
+from data_analysis.sleepers_processor import get_sleepers
 from gui.player_view_controller import PlayerController
 
 

@@ -1,12 +1,12 @@
 import pandas as pd
 
-from data_processing.adp_processing import read_adp_data
-from data_processing.data_standardizer import standardize_name
-from data_processing.fantasy_life_csv_processing import filter_by_position, get_fantasy_life_dfs
-from data_processing.pff_csv_processing import read_pff_csv
+from data_analysis.data_standardizer import standardize_name
+from data_intake.adp_processing import read_adp_data
+from data_intake.fantasy_life_csv_processing import filter_by_position, get_fantasy_life_dfs
+from data_intake.pff_csv_processing import read_pff_csv
 
-pff_projections_path = "/Users/yusufhacking/Documents/Projects/FantasyFootball/data/pff_projs/pff_all_projections.csv"
-adp_path = "/Users/yusufhacking/Documents/Projects/FantasyFootball/data/adp/4for4-adp-table.csv"
+pff_projections_path = "/Users/yusufhacking/Documents/Projects/FantasyFootball/data_intake/data/pff_projs/pff_all_projections.csv"
+adp_path = "/Users/yusufhacking/Documents/Projects/FantasyFootball/data_intake/data/adp/4for4-adp-table.csv"
 
 
 def run_rankings_pipeline():
@@ -34,8 +34,8 @@ def run_rankings_pipeline():
     result_df = result_df.rename(columns={
         'Proj Pts': 'Fantasy Life Projections',
         'fantasyPoints': 'PFF Projections',
-        'Y!': 'ADP_Yahoo'
-    })[['Player', 'Position', 'Avg Proj Pts', 'Fantasy Life Projections', 'PFF Projections', 'ADP_Yahoo']]
+        'Y!': 'ADP'
+    })[['Player', 'Position', 'Avg Proj Pts', 'Fantasy Life Projections', 'PFF Projections', 'ADP']]
 
     return result_df
 
@@ -45,7 +45,7 @@ def create_ranking_df(sorted_df, positions):
     df.reset_index(drop=True, inplace=True)
     df['Ranking'] = df.index
     return df[['Ranking', 'Player', 'Position', 'Avg Proj Pts',
-               'Fantasy Life Projections', 'PFF Projections', 'ADP_Yahoo']]
+               'Fantasy Life Projections', 'PFF Projections', 'ADP']]
 
 
 def sort_by_projected_points(df, category):

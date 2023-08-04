@@ -1,8 +1,8 @@
 import tkinter as tk
 
 from config_manager import load_config
-from data_processing.database_manager import get_players_data
-from data_processing.rankings_processor import RankingsProcessor
+from data_analysis.database_manager import get_players_data
+from data_analysis.rankings_processor import RankingsProcessor
 from fantasy_canon import FantasyCanonApp
 
 def main():

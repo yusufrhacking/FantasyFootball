@@ -10,7 +10,7 @@ def get_fantasy_life_dfs():
 
 
 def get_fantasy_life_csvs():
-    return glob.glob("data/dwain_projs/*.csv")
+    return glob.glob("/Users/yusufhacking/Documents/Projects/FantasyFootball/data_intake/data/dwain_projs/*.csv")
 
 
 def parse_fantasy_life_csv(file):

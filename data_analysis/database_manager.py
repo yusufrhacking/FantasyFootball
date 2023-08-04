@@ -1,8 +1,8 @@
 import sqlite3
 import pandas as pd
 
-from data_processing.data_manager import get_players, run_rankings_pipeline
-from data_processing.fantasy_life_csv_processing import get_fantasy_life_csvs
+from data_analysis.data_manager import run_rankings_pipeline, get_players
+
 
 def is_database_empty(conn):
     cursor = conn.cursor()
@@ -30,14 +30,14 @@ def read_from_sqlite(conn):
 
 
 def get_players_data():
-    conn = sqlite3.connect('/Users/yusufhacking/Documents/Projects/FantasyFootball/data/fantasy_football.sqlite3')
+    # conn = sqlite3.connect('../data_intake/data/fantasy_football.sqlite3')
     total_df = run_rankings_pipeline()
 
     data_frames = get_players(total_df)
     # write_to_sqlite(data_frames, conn)
     #
     # players_data = read_from_sqlite(conn)
-    conn.close()
+    # conn.close()
 
     players_data = data_frames
     return players_data
