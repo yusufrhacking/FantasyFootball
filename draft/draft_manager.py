@@ -32,7 +32,7 @@ class DraftManager:
         text += f"Up to draft: {self.teams_in_draft_order[self.current_drafter_index]}"
         return text
 
-    def next_teams_up_to_draft(self, count=16):
+    def next_teams_up_to_draft(self, count):
             next_teams = []
             current_index = self.current_drafter_index
             direction = self.snake_direction
@@ -40,6 +40,6 @@ class DraftManager:
                 current_index += direction
                 if current_index >= len(self.teams_in_draft_order) or current_index < 0:
                     direction *= -1
-                    current_index += direction * 2
+                    current_index += direction
                 next_teams.append(self.teams_in_draft_order[current_index])
             return next_teams
