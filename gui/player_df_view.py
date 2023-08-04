@@ -4,10 +4,14 @@ import pandas as pd
 
 
 class PlayerDFView:
-    def __init__(self, container, df):
+    def __init__(self, container, df, title=""):
         self.container = ttk.Frame(container, padding="10")
         self.df = df
         self.create_bottom_frame(container)
+
+    def _add_header(self, title):
+        header_label = ttk.Label(self.container, text=title, font=('Helvetica', 16, 'bold'))
+        header_label.pack(side=tk.TOP, pady=10, padx=20)
 
     def create_bottom_frame(self, root):
         self.bottom_frame = ttk.Frame(root, padding="10")
