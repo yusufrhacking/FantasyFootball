@@ -20,7 +20,7 @@ def get_sleepers(par_table, config):
         if pd.isna(yahoo_adp):
             continue
 
-        adj_yahoo_adp = int(yahoo_adp)-1
+        adj_yahoo_adp = max(0, int(yahoo_adp)-1)
 
         par_column = par_table['PAR']
 

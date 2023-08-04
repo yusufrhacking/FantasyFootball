@@ -5,10 +5,14 @@ def read_adp_data(file_path):
     # Read the CSV file into a DataFrame
     df = pd.read_csv(file_path)
 
-    # Filter down to the "Player" and "Y!" columns
-    filtered_df = df[["Player", "Y!"]]
+    adp_used = "Y!"
 
-    filtered_df = filtered_df.rename(columns={'Underdog': 'ADP'})
+    filtered_df = df[["Player", adp_used]]
+
+    filtered_df = filtered_df.rename(columns={adp_used: 'ADP'})
+    filtered_df['ADP'] = pd.to_numeric(filtered_df['ADP'], errors='coerce')
+
+    filtered_df['ADP'] = filtered_df['ADP'].fillna(0).astype(int)
 
     return filtered_df
 
