@@ -1,5 +1,8 @@
 class DraftManager:
-    def __init__(self, config):
+    def __init__(self, par_table, config):
+        self.par_table = par_table
+        self.draftable_players = par_table.copy()
+
         self.position_requirements = config['position_requirements']
         self.teams_in_draft_order = config['draft_order']
         self.num_of_teams = len(self.teams_in_draft_order)
@@ -10,10 +13,16 @@ class DraftManager:
         self.current_round = 1
         self.current_overall_pick = 1
 
+    def get_draftable_players(self):
+        return self.draftable_players
+
     def draft_player_data(self, player):
         current_team = self.teams_in_draft_order[self.current_drafter_index]
         self.players_by_teams[current_team].append(player)
         self.update_drafter_order()
+
+        player_name = player[1]
+        self.draftable_players = self.draftable_players[self.draftable_players['Player'] != player_name]
 
     def draft_player(self, draft_callback):
         drafted_player = draft_callback()

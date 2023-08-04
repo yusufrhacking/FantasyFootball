@@ -8,7 +8,7 @@ from draft.team_sidebar import TeamSidebar
 class DraftPageApp:
     def __init__(self, root, par_table, config):
         self.bottom_frame = None
-        self.par_table = par_table
+        # self.par_table = par_table
         root.title("Fantasy Draft Page")
         root.geometry("1200x800")
         root.configure(bg='#f0f0f0')  # Soft Gray Background
@@ -17,7 +17,7 @@ class DraftPageApp:
         style.theme_use("clam")
         style.configure("TFrame", background="lightgray")
 
-        self.draft_manager = DraftManager(config)
+        self.draft_manager = DraftManager(par_table, config)
         self.create_banner(root)
 
         self.create_top_frame(root)
@@ -55,7 +55,7 @@ class DraftPageApp:
 
     def create_tree(self, root):
         tree = ttk.Treeview(root, selectmode="browse")
-        tree["columns"] = list(self.par_table.columns)
+        tree["columns"] = list(self.draft_manager.get_draftable_players().columns)
         tree["show"] = "headings"
 
         self.create_columns(tree)
@@ -70,18 +70,18 @@ class DraftPageApp:
     def update_tree(self, event):
         query = self.search_bar.get().lower()  # Get the current search query
         self.tree.delete(*self.tree.get_children())  # Delete all existing items from the tree
-        for row in self.par_table.itertuples():  # Iterate through your original data
+        for row in self.draft_manager.get_draftable_players().itertuples():  # Iterate through your original data
             # Check if the query matches any part of the row
             if query in str(row).lower():
                 self.tree.insert("", "end", values=row[1:])  # Insert only the matching rows into the tree
 
     def create_columns(self, tree):
-        for col in self.par_table.columns:
+        for col in self.draft_manager.get_draftable_players().columns:
             tree.heading(col, text=col)
             tree.column(col, width=100)
 
     def insert_rows(self, tree):
-        for index, row in self.par_table.iterrows():
+        for index, row in self.draft_manager.get_draftable_players().iterrows():
             tree.insert("", index, values=list(row), tags=row['Position'])
 
     def apply_row_colors(self, tree):
