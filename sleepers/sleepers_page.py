@@ -2,6 +2,7 @@ from tkinter import ttk
 import tkinter as tk
 
 from data_processing.sleepers_processor import get_sleepers
+from gui.player_df_view import PlayerDFView
 
 
 class SleepersPageApp:
@@ -18,7 +19,8 @@ class SleepersPageApp:
         style.configure("TFrame", background="lightgray")
 
         self.create_top_frame(root)
-        self.create_bottom_frame(root)
+        player_df_view = PlayerDFView(root, self.data_table)
+        # self.create_bottom_frame(root)
 
     def create_top_frame(self, root):
         top_frame = ttk.Frame(root, padding="10")

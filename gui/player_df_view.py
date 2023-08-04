@@ -6,7 +6,6 @@ import pandas as pd
 class PlayerDFView:
     def __init__(self, container, df):
         self.container = ttk.Frame(container, padding="10")
-        self.container.grid(row=0, column=0, sticky="nsew")
         self.df = df
         self.create_bottom_frame(container)
 
