@@ -38,6 +38,9 @@ class DraftPageApp:
         title_label.pack(side="top", padx=5)
 
     def create_bottom_frame(self, root):
+        self.search_bar = ttk.Entry(root)
+        self.search_bar.pack()
+
         self.bottom_frame = ttk.Frame(root, padding="10")
         self.bottom_frame.pack(side="top", fill="both", expand=True)
         self.tree = self.create_tree(self.bottom_frame)
@@ -47,6 +50,7 @@ class DraftPageApp:
         self.bottom_frame.grid_columnconfigure(1, weight=1)
         self.bottom_frame.grid_rowconfigure(0, weight=1)
 
+        self.search_bar.bind('<KeyRelease>', self.update_tree)
 
 
     def create_tree(self, root):
@@ -59,7 +63,17 @@ class DraftPageApp:
         self.apply_row_colors(tree)
         self.add_scrollbar(tree, root)
 
+        tree.bind('<Return>', self.on_enter)
+
         return tree
+
+    def update_tree(self, event):
+        query = self.search_bar.get().lower()  # Get the current search query
+        self.tree.delete(*self.tree.get_children())  # Delete all existing items from the tree
+        for row in self.par_table.itertuples():  # Iterate through your original data
+            # Check if the query matches any part of the row
+            if query in str(row).lower():
+                self.tree.insert("", "end", values=row[1:])  # Insert only the matching rows into the tree
 
     def create_columns(self, tree):
         for col in self.par_table.columns:
@@ -93,7 +107,6 @@ class DraftPageApp:
         separator_above = ttk.Separator(banner_frame, orient="horizontal")
         separator_above.pack(side="top", fill="x", padx=5, pady=5)
 
-
         self.banner_label = ttk.Label(banner_frame, text=self.get_next_teams_text(),
                                       font=("Helvetica", 16, "bold"), foreground="#f0f0f0",
                                       background="#468B97")
@@ -116,4 +129,7 @@ class DraftPageApp:
         self.update_banner()
         return player_data
 
-
+    def on_enter(self, event):
+        player_data = self.draft_player()
+        self.draft_manager.draft_player_data(player_data)
+        self.team_sidebar.player_was_drafted()

@@ -10,6 +10,11 @@ class DraftManager:
         self.current_round = 1
         self.current_overall_pick = 1
 
+    def draft_player_data(self, player):
+        current_team = self.teams_in_draft_order[self.current_drafter_index]
+        self.players_by_teams[current_team].append(player)
+        self.update_drafter_order()
+
     def draft_player(self, draft_callback):
         drafted_player = draft_callback()
         current_team = self.teams_in_draft_order[self.current_drafter_index]
@@ -24,7 +29,6 @@ class DraftManager:
             self.snake_direction *= -1
             self.current_drafter_index += self.snake_direction
 
-
     def get_players_from_team(self, selected_team):
         return self.players_by_teams.get(selected_team, [])
 
@@ -34,13 +38,13 @@ class DraftManager:
         return text
 
     def next_teams_up_to_draft(self):
-            next_teams = []
-            current_index = self.current_drafter_index
-            direction = self.snake_direction
-            for _ in range(self.num_of_teams):
+        next_teams = []
+        current_index = self.current_drafter_index
+        direction = self.snake_direction
+        for _ in range(self.num_of_teams):
+            current_index += direction
+            if current_index >= len(self.teams_in_draft_order) or current_index < 0:
+                direction *= -1
                 current_index += direction
-                if current_index >= len(self.teams_in_draft_order) or current_index < 0:
-                    direction *= -1
-                    current_index += direction
-                next_teams.append(self.teams_in_draft_order[current_index])
-            return next_teams
+            next_teams.append(self.teams_in_draft_order[current_index])
+        return next_teams

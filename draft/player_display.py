@@ -25,7 +25,7 @@ class PlayerDisplay:
         self.player_labels.append((position, player_label))
 
     def add_player_to_gui(self, player_data):
-        player, position, par = player_data[1], player_data[2], player_data[3]
+        player, position, par = player_data[1], player_data[2], player_data[4]
         target_pos = self.determine_target_position(position)
         self.update_player_label(target_pos, f'{player} ({position}) - {par} PAR')
 

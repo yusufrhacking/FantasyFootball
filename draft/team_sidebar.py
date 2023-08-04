@@ -35,6 +35,11 @@ class TeamSidebar:
         for player_data in team_players:
             self.player_display.add_player_to_gui(player_data)
 
+    def player_was_drafted(self):
+        self.current_drafter_label.config(text=self.draft_manager.current_drafter_text())
+        self.team_combobox.current(self.draft_manager.current_drafter_index)
+        self.update_team_display()
+
     def handle_draft(self, draft_callback):
         self.draft_manager.draft_player(draft_callback)
         self.current_drafter_label.config(text=self.draft_manager.current_drafter_text())
