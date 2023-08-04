@@ -2,6 +2,7 @@ import tkinter as tk
 
 from draft.draft_page import DraftPageApp
 from gui.rankings_app import PositionalRankingsApp
+from sleepers.sleepers_page import SleepersPageApp
 
 
 class FantasyCanonApp:
@@ -18,12 +19,17 @@ class FantasyCanonApp:
         draft_button = tk.Button(root, text="Open Draft Page", command=self.open_draft_page)
         draft_button.pack(pady=20)
 
+        sleepers_button = tk.Button(root, text="Open Sleepers Page", command=self.open_sleepers_page)
+        sleepers_button.pack(pady=20)
+
     def open_positional_rankings(self):
-        # Create a new window for the PositionalRankingsApp
         new_window = tk.Toplevel()
         app = PositionalRankingsApp(new_window, self.position_separated_dfs)
 
     def open_draft_page(self):
-        # Create a new window for the DraftPageApp
         draft_window = tk.Toplevel()
         app = DraftPageApp(draft_window, self.par_table, self.config)
+
+    def open_sleepers_page(self):
+        sleepers_window = tk.Toplevel()
+        app = SleepersPageApp(sleepers_window, self.par_table, self.config)

@@ -9,7 +9,7 @@ pff_projections_path = "/Users/yusufhacking/Documents/Projects/FantasyFootball/d
 adp_path = "/Users/yusufhacking/Documents/Projects/FantasyFootball/data/adp/4for4-adp-table.csv"
 
 
-def run_data_pipeline():
+def run_rankings_pipeline():
     # raw data
     fantasy_life_df = get_fantasy_life_dfs()
     pff_df = read_pff_csv(pff_projections_path)
