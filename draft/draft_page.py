@@ -68,12 +68,23 @@ class DraftPageApp:
         return tree
 
     def update_tree(self, event):
-        query = self.search_bar.get().lower()  # Get the current search query
-        self.tree.delete(*self.tree.get_children())  # Delete all existing items from the tree
-        for row in self.draft_manager.get_draftable_players().itertuples():  # Iterate through your original data
-            # Check if the query matches any part of the row
+        if event.keysym == 'Return':
+            self.on_enter(event)
+            return
+
+        query = self.search_bar.get().lower()
+        self.tree.delete(*self.tree.get_children())
+
+        first_child = None
+
+        for row in self.draft_manager.get_draftable_players().itertuples():
             if query in str(row).lower():
-                self.tree.insert("", "end", values=row[1:])  # Insert only the matching rows into the tree
+                child_id = self.tree.insert("", "end", values=row[1:])
+                if first_child is None:
+                    first_child = child_id
+
+        if first_child:
+            self.tree.selection_set(first_child)
 
     def create_columns(self, tree):
         for col in self.draft_manager.get_draftable_players().columns:
