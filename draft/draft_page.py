@@ -60,7 +60,6 @@ class DraftPageApp:
 
         self.create_columns(tree)
         self.insert_rows(tree)
-        self.apply_row_colors(tree)
         self.add_scrollbar(tree, root)
 
         tree.bind('<Return>', self.on_enter)
@@ -95,16 +94,6 @@ class DraftPageApp:
         for index, row in self.draft_manager.get_draftable_players().iterrows():
             tree.insert("", index, values=list(row), tags=row['Position'])
 
-    def apply_row_colors(self, tree):
-        colors = {
-            'QB': '#1D5B79',
-            'RB': '#468B97',
-            'WR': '#EF6262',
-            'TE': '#F3AA60',
-        }
-
-        for position, color in colors.items():
-            tree.tag_configure(position, background=color)
 
     def add_scrollbar(self, tree, root):
         scrollbar = ttk.Scrollbar(root, orient="vertical", command=tree.yview)
