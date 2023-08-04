@@ -8,5 +8,7 @@ def read_adp_data(file_path):
     # Filter down to the "Player" and "Y!" columns
     filtered_df = df[["Player", "Y!"]]
 
+    filtered_df = filtered_df.rename(columns={'Underdog': 'ADP'})
+
     return filtered_df
 

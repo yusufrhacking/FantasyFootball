@@ -33,8 +33,7 @@ def run_rankings_pipeline():
     # Rename columns and select the desired columns
     result_df = result_df.rename(columns={
         'Proj Pts': 'Fantasy Life Projections',
-        'fantasyPoints': 'PFF Projections',
-        'Y!': 'ADP'
+        'fantasyPoints': 'PFF Projections'
     })[['Player', 'Position', 'Avg Proj Pts', 'Fantasy Life Projections', 'PFF Projections', 'ADP']]
 
     return result_df
