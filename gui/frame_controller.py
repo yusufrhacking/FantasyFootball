@@ -1,4 +1,4 @@
-from gui.data_frame_view import DataFrameView
+from gui.multi_tab_view import DataFrameView
 
 
 class FrameController:
