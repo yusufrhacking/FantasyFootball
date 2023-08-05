@@ -38,7 +38,8 @@ class DraftPageApp:
 
         self.bottom_frame = ttk.Frame(root, padding="10")
         self.bottom_frame.pack(side="top", fill="both", expand=True)
-        self.player_view = DataFrameView(self.bottom_frame, self.get_df_to_show(), on_enter=self.on_enter, shade_rows=True) # SHADE ROWS = TRUE
+        self.player_view = DataFrameView(self.bottom_frame, self.draft_manager.get_draftable_players(),
+                                         on_enter=self.on_enter_draft, shade_rows=True)
 
         self.bottom_frame.grid_columnconfigure(0, weight=3)
         self.bottom_frame.grid_columnconfigure(1, weight=1)
@@ -48,23 +49,11 @@ class DraftPageApp:
 
     def update_tree_on_search(self, event):
         if event.keysym == 'Return':
-            self.on_enter(event)
+            self.on_enter_draft(event)
             return
 
         query = self.search_bar.get().lower()
-        self.tree.delete(*self.tree.get_children())
-
-        first_child = None
-
-        for row in self.get_df_to_show().itertuples():
-            if query in str(row).lower():
-                child_id = self.tree.insert("", "end", values=row[1:])
-                if first_child is None:
-                    first_child = child_id
-
-        if first_child:
-            self.tree.selection_set(first_child)
-
+        self.player_view.update_on_query(query, self.draft_manager.get_draftable_players())
 
     def add_scrollbar(self, tree, root):
         scrollbar = ttk.Scrollbar(root, orient="vertical", command=tree.yview)
@@ -75,7 +64,7 @@ class DraftPageApp:
         next_teams = self.draft_manager.next_teams_up_to_draft()
         return "Next up to draft: " + ", ".join(next_teams)
 
-    def on_enter(self, event):
+    def on_enter_draft(self, event):
         player_data = self.draft_player()
         self.draft_manager.draft_player_data(player_data)
         self.team_sidebar.player_was_drafted()
@@ -84,8 +73,3 @@ class DraftPageApp:
         player_data = self.player_view.pop_selected_player_data()
         self.banner.update_banner(self.get_next_teams_text())
         return player_data
-
-    def get_df_to_show(self):
-        relevant_df = self.draft_manager.get_draftable_players()
-        # relevant_df = relevant_df.drop(columns=['Added_PAR_Value'])
-        return relevant_df

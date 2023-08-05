@@ -62,6 +62,20 @@ class DataFrameView:
 
         self.sorting_column = col
 
+    def update_on_query(self, query, new_df_to_show):
+        self.tree.delete(*self.tree.get_children())
+
+        first_child = None
+
+        for row in new_df_to_show.itertuples():
+            if query in str(row).lower():
+                child_id = self.tree.insert("", "end", values=row[1:])
+                if first_child is None:
+                    first_child = child_id
+
+        if first_child:
+            self.tree.selection_set(first_child)
+
     def pop_selected_player_data(self):
         selected_item = self.tree.selection()[0]
         player_data = self.tree.item(selected_item)['values']
