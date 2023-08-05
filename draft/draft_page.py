@@ -66,16 +66,6 @@ class DraftPageApp:
 
         return tree
 
-    def apply_row_colors(self, tree):
-        colors = {
-            'QB': '#1D5B79',
-            'RB': '#468B97',
-            'WR': '#EF6262',
-            'TE': '#F3AA60',
-        }
-
-        for position, color in colors.items():
-            tree.tag_configure(position, background=color)
 
     def update_tree_on_search(self, event):
         if event.keysym == 'Return':
