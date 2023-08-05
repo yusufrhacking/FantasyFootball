@@ -50,6 +50,9 @@ class DraftPageApp:
     def update_tree_on_search(self, event):
         if event.keysym == 'Return':
             self.on_enter_draft(event)
+            self.search_bar.delete(0, 'end')
+            query = ''
+            self.player_view.update_on_query(query, self.draft_manager.get_draftable_players())
             return
 
         query = self.search_bar.get().lower()
