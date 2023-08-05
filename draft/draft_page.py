@@ -38,9 +38,7 @@ class DraftPageApp:
 
         self.bottom_frame = ttk.Frame(root, padding="10")
         self.bottom_frame.pack(side="top", fill="both", expand=True)
-        self.player_view = DataFrameView(self.bottom_frame, self.get_df_to_show())
-        # self.tree = self.create_tree(self.bottom_frame)
-        # self.tree.grid(row=0, column=0, sticky="nsew")
+        self.player_view = DataFrameView(self.bottom_frame, self.get_df_to_show(), on_enter=self.on_enter)
 
         self.bottom_frame.grid_columnconfigure(0, weight=3)
         self.bottom_frame.grid_columnconfigure(1, weight=1)
@@ -109,17 +107,15 @@ class DraftPageApp:
         next_teams = self.draft_manager.next_teams_up_to_draft()
         return "Next up to draft: " + ", ".join(next_teams)
 
-    def draft_player(self):
-        selected_item = self.tree.selection()[0]
-        player_data = self.tree.item(selected_item)['values']
-        self.tree.delete(selected_item)
-        self.banner.update_banner(self.get_next_teams_text())
-        return player_data
-
     def on_enter(self, event):
         player_data = self.draft_player()
         self.draft_manager.draft_player_data(player_data)
         self.team_sidebar.player_was_drafted()
+
+    def draft_player(self):
+        player_data = self.player_view.pop_selected_player_data()
+        self.banner.update_banner(self.get_next_teams_text())
+        return player_data
 
     def get_df_to_show(self):
         relevant_df = self.draft_manager.get_draftable_players()

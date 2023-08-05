@@ -4,11 +4,13 @@ import pandas as pd
 
 
 class DataFrameView:
-    def __init__(self, container, df, title=""):
+    def __init__(self, container, df, title="", on_enter=None):
         self.container = ttk.Frame(container)
         self.container.grid(row=0, column=0, sticky="nsew")
 
         self.df = df
+
+        self.on_enter = on_enter
 
         self._add_header(title)
         self._create_tree_view(df)
@@ -30,6 +32,9 @@ class DataFrameView:
             self.tree.heading(col, text=col, command=lambda c=col: self._sort_tree(c))
             self.tree.column(col, width=100)
 
+        if self.on_enter:
+            self.tree.bind('<Return>', self.on_enter)
+
         scrollbar = ttk.Scrollbar(self.container, orient="vertical", command=self.tree.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.tree.configure(yscrollcommand=scrollbar.set)
@@ -49,4 +54,10 @@ class DataFrameView:
         self._populate_tree_view(self.df)
 
         self.sorting_column = col
+
+    def pop_selected_player_data(self):
+        selected_item = self.tree.selection()[0]
+        player_data = self.tree.item(selected_item)['values']
+        self.tree.delete(selected_item)
+        return player_data
 
