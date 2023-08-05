@@ -3,18 +3,18 @@ from tkinter import ttk
 
 
 class DataFrameView:
-    def __init__(self, container, df, title="", on_enter=None, shade_rows=False):
+    def __init__(self, container, draft_manager, title="", on_enter=None, shade_rows=False):
         self.container = ttk.Frame(container)
         self.container.grid(row=0, column=0, sticky="nsew")
 
-        self.df = df
+        self.draft_manager = draft_manager
 
         self.on_enter = on_enter
         self.shade_rows = shade_rows
 
         self._add_header(title)
-        self._create_tree_view(df)
-        self._populate_tree_view(df)
+        self._create_tree_view(draft_manager.draftable_players)
+        self._populate_tree_view(draft_manager.draftable_players)
 
         self.sorting_column = None  # Keep track of the column currently being sorted
         self.sorting_order = False  # Keep track of the sorting order (True for ascending, False for descending)
@@ -55,19 +55,19 @@ class DataFrameView:
         else:
             self.sorting_order = True
 
-        self.df.sort_values(by=col, ascending=self.sorting_order, inplace=True)
-        self.df.reset_index(drop=True, inplace=True)
+        self.draft_manager.draftable_players.sort_values(by=col, ascending=self.sorting_order, inplace=True)
+        self.draft_manager.draftable_players.reset_index(drop=True, inplace=True)
         self.tree.delete(*self.tree.get_children())
-        self._populate_tree_view(self.df)
+        self._populate_tree_view(self.draft_manager.draftable_players)
         self.sorting_column = col
 
     def update_on_query(self, query, new_df_to_show):
-        self.df = new_df_to_show
+        self.draft_manager.draftable_players = new_df_to_show
         self.tree.delete(*self.tree.get_children())
 
         first_child = None
 
-        for row in self.df.itertuples():
+        for row in self.draft_manager.draftable_players.itertuples():
             if query in str(row).lower():
                 child_id = self.tree.insert("", "end", values=row[1:])
                 if first_child is None:

@@ -38,7 +38,7 @@ class DraftPageApp:
 
         self.bottom_frame = ttk.Frame(root, padding="10")
         self.bottom_frame.pack(side="top", fill="both", expand=True)
-        self.player_view = DataFrameView(self.bottom_frame, self.draft_manager.get_draftable_players(),
+        self.player_view = DataFrameView(self.bottom_frame, self.draft_manager,
                                          on_enter=self.on_enter_draft, shade_rows=True)
 
         self.bottom_frame.grid_columnconfigure(0, weight=3)
@@ -51,11 +51,11 @@ class DraftPageApp:
         if event.keysym == 'Return':
             self.on_enter_draft(event)
             self.search_bar.delete(0, 'end')
-            self.player_view.reset_tree(self.draft_manager.get_draftable_players())
+            self.player_view.reset_tree(self.draft_manager.draftable_players)
             return
 
         query = self.search_bar.get().lower()
-        self.player_view.update_on_query(query, self.draft_manager.get_draftable_players())
+        self.player_view.update_on_query(query, self.draft_manager.draftable_players)
 
     def add_scrollbar(self, tree, root):
         scrollbar = ttk.Scrollbar(root, orient="vertical", command=tree.yview)
