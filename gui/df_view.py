@@ -76,6 +76,13 @@ class DataFrameView:
         if first_child:
             self.tree.selection_set(first_child)
 
+    def reset_tree(self, new_df_to_show):
+        self.tree.delete(*self.tree.get_children())
+        self._populate_tree_view(new_df_to_show)
+        first_item = self.tree.get_children()
+        if first_item:
+            self.tree.selection_set(first_item[0])
+
     def pop_selected_player_data(self):
         selected_item = self.tree.selection()[0]
         player_data = self.tree.item(selected_item)['values']
