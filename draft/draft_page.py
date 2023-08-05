@@ -5,8 +5,10 @@ from draft.banner import Banner
 from draft.draft_manager import DraftManager
 from draft.draft_title import DraftTitle
 from draft.team_sidebar import TeamSidebar
+from gui.df_view import DataFrameView
 
 title = "Fantasy Draft Page"
+
 
 class DraftPageApp:
     def __init__(self, root, par_table, config):
@@ -30,15 +32,15 @@ class DraftPageApp:
         style.theme_use("clam")
         style.configure("TFrame", background="lightgray")
 
-
     def create_bottom_frame(self, root):
         self.search_bar = ttk.Entry(root)
         self.search_bar.pack()
 
         self.bottom_frame = ttk.Frame(root, padding="10")
         self.bottom_frame.pack(side="top", fill="both", expand=True)
-        self.tree = self.create_tree(self.bottom_frame)
-        self.tree.grid(row=0, column=0, sticky="nsew")
+        self.player_view = DataFrameView(self.bottom_frame, self.get_df_to_show())
+        # self.tree = self.create_tree(self.bottom_frame)
+        # self.tree.grid(row=0, column=0, sticky="nsew")
 
         self.bottom_frame.grid_columnconfigure(0, weight=3)
         self.bottom_frame.grid_columnconfigure(1, weight=1)
@@ -59,7 +61,6 @@ class DraftPageApp:
         tree.bind('<Return>', self.on_enter)
 
         return tree
-
 
     def update_tree_on_search(self, event):
         if event.keysym == 'Return':
@@ -108,7 +109,6 @@ class DraftPageApp:
         next_teams = self.draft_manager.next_teams_up_to_draft()
         return "Next up to draft: " + ", ".join(next_teams)
 
-
     def draft_player(self):
         selected_item = self.tree.selection()[0]
         player_data = self.tree.item(selected_item)['values']
@@ -144,7 +144,3 @@ class DraftPageApp:
 
         color_hash = f'#{color[0]:02x}{color[1]:02x}{color[2]:02x}'
         return color_hash
-
-
-
-
