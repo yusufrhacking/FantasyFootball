@@ -66,6 +66,17 @@ class DraftPageApp:
 
         return tree
 
+    def apply_row_colors(self, tree):
+        colors = {
+            'QB': '#1D5B79',
+            'RB': '#468B97',
+            'WR': '#EF6262',
+            'TE': '#F3AA60',
+        }
+
+        for position, color in colors.items():
+            tree.tag_configure(position, background=color)
+
     def update_tree_on_search(self, event):
         if event.keysym == 'Return':
             self.on_enter(event)
@@ -91,8 +102,18 @@ class DraftPageApp:
             tree.column(col, width=100)
 
     def insert_rows(self, tree):
-        for index, row in self.get_df_to_show().iterrows():
-            tree.insert("", index, values=list(row), tags=row['Position'])
+        df = self.get_df_to_show()  # Assuming this returns the DataFrame
+
+        for index, row in df.iterrows():
+            added_par_value = row['Added_PAR_Value']
+            color_shade = self.get_color_shade(added_par_value)
+
+            # Create a unique tag for this row with the color shade
+            tag = 'color' + str(index)
+            tree.tag_configure(tag, background=color_shade)
+
+            # Insert the row with the tag
+            tree.insert("", index, values=list(row), tags=(tag,))
 
     def add_scrollbar(self, tree, root):
         scrollbar = ttk.Scrollbar(root, orient="vertical", command=tree.yview)
@@ -135,5 +156,19 @@ class DraftPageApp:
 
     def get_df_to_show(self):
         relevant_df = self.draft_manager.get_draftable_players()
-        relevant_df = relevant_df.drop(columns=['Added_PAR_Value'])
+        # relevant_df = relevant_df.drop(columns=['Added_PAR_Value'])
         return relevant_df
+
+    def get_color_shade(self, value):
+        # Normalize the value to the range 0 to 1
+        normalized_value = (value + 50) / 100.0
+
+        # Calculate the red and green components based on the normalized value
+        red = int(255 * (1 - normalized_value))
+        green = int(255 * normalized_value)
+
+        # Create the color in RGB format
+        color = (red, green, 0)  # Red and green values, with blue set to 0
+
+        return f'#{color[0]:02x}{color[1]:02x}00'
+
