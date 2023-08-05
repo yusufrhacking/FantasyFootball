@@ -3,11 +3,13 @@ class RankingsProcessor:
         self.overall_rankings = overall_rankings
         self.position_requirements = position_requirements
         self.number_of_teams = number_of_teams
+        self.replacement_player_multiplier = 1.5
 
     def calculate_players_used_at_positions(self):
         players_used_at_position = {}
         for position, requirement in self.position_requirements.items():
-            players_used_at_position[position] = int(requirement * self.number_of_teams * 1.5)
+            players_used_at_position[position] = int(
+                requirement * self.number_of_teams * self.replacement_player_multiplier)
         return players_used_at_position
 
     def find_positional_replacement_level_players(self):
@@ -15,39 +17,9 @@ class RankingsProcessor:
 
         replacement_players = {}
         for position, number_of_players in players_used_at_position.items():
-            players_in_flex = {}
-            players_in_position = {}
-
-            if position == "RB/WR/TE":
-                players_in_flex = self.overall_rankings[self.overall_rankings['Position'].isin(['RB', 'WR', 'TE'])]
-            else:
-                players_in_position = self.overall_rankings[self.overall_rankings['Position'] == position]
-
-            relevant_players = players_in_flex if position == "RB/WR/TE" else players_in_position
-
-            if len(relevant_players) > number_of_players:
-                replacement_players[position] = relevant_players.iloc[number_of_players]
-            else:
-                replacement_players[position] = None
-
-        return replacement_players
-
-    def find_replacement_level_players(self):
-        players_used_at_position = self.calculate_players_used_at_positions()
-
-        replacement_players = {}
-        for position, number_of_players in players_used_at_position.items():
-            players_in_flex = {}
-            players_in_position = {}
-            if position == "FLEX":
-                players_in_flex = self.overall_rankings[self.overall_rankings['Position'].isin(['RB', 'WR', 'TE'])]
-            else:
-                players_in_position = self.overall_rankings[self.overall_rankings['Position'] == position]
-
-            relevant_players = players_in_flex if position == "FLEX" else players_in_position
-
-            if len(relevant_players) > number_of_players:
-                replacement_players[position] = relevant_players.iloc[number_of_players]
+            players_in_position = self.overall_rankings[self.overall_rankings['Position'].isin(position.split('/'))]
+            if len(players_in_position) > number_of_players:
+                replacement_players[position] = players_in_position.iloc[number_of_players]
             else:
                 replacement_players[position] = None
 
@@ -85,4 +57,3 @@ class RankingsProcessor:
         par_table['Ranking'] = par_table['PAR'].rank(ascending=False, method='first').astype(int)
 
         return par_table
-

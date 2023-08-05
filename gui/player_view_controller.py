@@ -10,4 +10,4 @@ class PlayerController:
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
-        frame = DataFrameView(container, df)
+        frame = DataFrameView(container, df, shade_rows=True)
