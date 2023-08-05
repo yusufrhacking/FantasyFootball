@@ -38,7 +38,7 @@ class DraftPageApp:
 
         self.bottom_frame = ttk.Frame(root, padding="10")
         self.bottom_frame.pack(side="top", fill="both", expand=True)
-        self.player_view = DataFrameView(self.bottom_frame, self.draft_manager,
+        self.player_view = DataFrameView(self.bottom_frame, self.draft_manager.draftable_players,
                                          on_enter=self.on_enter_draft, shade_rows=True)
 
         self.bottom_frame.grid_columnconfigure(0, weight=3)
