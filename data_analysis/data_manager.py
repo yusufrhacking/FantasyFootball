@@ -62,7 +62,7 @@ def get_players(merged_df, positions=None):
     for pos in positions:
         position_dfs[pos] = create_ranking_df(sorted_df, [pos])
 
-    position_dfs['FLEX'] = create_ranking_df(sorted_df, ['RB', 'WR', 'TE'])
+    position_dfs['RB/WR/TE'] = create_ranking_df(sorted_df, ['RB', 'WR', 'TE'])
 
     position_dfs['OVR'] = create_ranking_df(sorted_df, ['QB', 'RB', 'WR', 'TE'])
 

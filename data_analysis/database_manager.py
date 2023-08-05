@@ -17,7 +17,7 @@ def write_to_sqlite(players_dfs, conn):
 
 
 def read_from_sqlite(conn):
-    positions = ["OVR", "QB", "RB", "WR", "TE", "FLEX"]
+    positions = ["OVR", "QB", "RB", "WR", "TE", "RB/WR/TE"]
     players_dfs = {}
 
     for position in positions:

@@ -4,17 +4,39 @@ class RankingsProcessor:
         self.position_requirements = position_requirements
         self.number_of_teams = number_of_teams
 
-    def calculate_in_use_players(self):
-        in_use_players = {}
+    def calculate_players_used_at_positions(self):
+        players_used_at_position = {}
         for position, requirement in self.position_requirements.items():
-            in_use_players[position] = int(requirement * self.number_of_teams * 1.5)
-        return in_use_players
+            players_used_at_position[position] = int(requirement * self.number_of_teams * 1.5)
+        return players_used_at_position
 
-    def find_replacement_level_players(self):
-        in_use_players = self.calculate_in_use_players()
+    def find_positional_replacement_level_players(self):
+        players_used_at_position = self.calculate_players_used_at_positions()
 
         replacement_players = {}
-        for position, number_of_players in in_use_players.items():
+        for position, number_of_players in players_used_at_position.items():
+            players_in_flex = {}
+            players_in_position = {}
+
+            if position == "RB/WR/TE":
+                players_in_flex = self.overall_rankings[self.overall_rankings['Position'].isin(['RB', 'WR', 'TE'])]
+            else:
+                players_in_position = self.overall_rankings[self.overall_rankings['Position'] == position]
+
+            relevant_players = players_in_flex if position == "RB/WR/TE" else players_in_position
+
+            if len(relevant_players) > number_of_players:
+                replacement_players[position] = relevant_players.iloc[number_of_players]
+            else:
+                replacement_players[position] = None
+
+        return replacement_players
+
+    def find_replacement_level_players(self):
+        players_used_at_position = self.calculate_players_used_at_positions()
+
+        replacement_players = {}
+        for position, number_of_players in players_used_at_position.items():
             players_in_flex = {}
             players_in_position = {}
             if position == "FLEX":
@@ -34,16 +56,16 @@ class RankingsProcessor:
     def calculate_par_table(self):
         # Calculate the replacement level points for each position
         replacement_level_points = {}
-        for position, player in self.find_replacement_level_players().items():
+        for position, player in self.find_positional_replacement_level_players().items():
             replacement_level_points[position] = player['Avg Proj Pts'] if player is not None else 0
 
         # Special handling for FLEX: use the same replacement level points for RB, WR, and TE
-        flex_replacement_level = replacement_level_points['FLEX']
+        flex_replacement_level = replacement_level_points['RB/WR/TE']
         replacement_level_points['RB'] = flex_replacement_level
         replacement_level_points['WR'] = flex_replacement_level
         replacement_level_points['TE'] = flex_replacement_level
 
-        print("Replacement level players: ", self.find_replacement_level_players())
+        print("Replacement level players: ", self.find_positional_replacement_level_players())
 
         # Calculate PAR for each player
         self.overall_rankings['PAR'] = self.overall_rankings.apply(

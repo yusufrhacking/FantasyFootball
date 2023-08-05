@@ -30,9 +30,9 @@ class PlayerDisplay:
         self.update_player_label(target_pos, f'{player} ({position}) - {par} PAR')
 
     def determine_target_position(self, position):
-        for target_pos in [position, 'FLEX', 'BENCH']:
+        for target_pos in [position, 'RB/WR/TE', 'BENCH']:
             if target_pos in ['WR', 'RB', 'TE'] and position == target_pos:
-                target_pos = 'FLEX'
+                target_pos = 'RB/WR/TE'
             if self.is_position_available(target_pos):
                 return target_pos
 
