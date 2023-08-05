@@ -29,6 +29,7 @@ def run_rankings_pipeline():
 
     # Merge the above DataFrame with ADP DataFrame
     result_df = pd.merge(merged_df, adp_df, on='Player', how='left')
+    result_df['ADP'] = result_df['ADP'].fillna(250).astype(int)
 
     # Rename columns and select the desired columns
     result_df = result_df.rename(columns={
