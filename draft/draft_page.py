@@ -3,26 +3,18 @@ from tkinter import ttk
 
 from draft.banner import Banner
 from draft.draft_manager import DraftManager
+from draft.draft_title import DraftTitle
 from draft.team_sidebar import TeamSidebar
 
+title = "Fantasy Draft Page"
 
 class DraftPageApp:
     def __init__(self, root, par_table, config):
-        self.bottom_frame = None
-        # self.par_table = par_table
-        root.title("Fantasy Draft Page")
-        root.geometry("1200x800")
-        root.configure(bg='#f0f0f0')  # Soft Gray Background
-
-        style = ttk.Style(root)
-        style.theme_use("clam")
-        style.configure("TFrame", background="lightgray")
-
+        self.establish_root(root)
         self.draft_manager = DraftManager(par_table, config)
-
         self.banner = Banner(root, self.get_next_teams_text())
 
-        self.create_top_frame(root)
+        self.title = DraftTitle(root, title)
         self.create_bottom_frame(root)
 
         side_frame = ttk.Frame(self.bottom_frame, padding="20")
@@ -30,14 +22,14 @@ class DraftPageApp:
 
         self.team_sidebar = TeamSidebar(side_frame, self.draft_player, self.draft_manager)
 
-    def create_top_frame(self, root):
-        top_frame = ttk.Frame(root, padding="10")
-        top_frame.pack(side="top", fill="both", expand=False)
-        self.add_title(top_frame)
+    def establish_root(self, root):
+        root.title(title)
+        root.geometry("1200x800")
+        root.configure(bg='#f0f0f0')  # Soft Gray Background
+        style = ttk.Style(root)
+        style.theme_use("clam")
+        style.configure("TFrame", background="lightgray")
 
-    def add_title(self, frame):
-        title_label = ttk.Label(frame, text="Fantasy Draft", font=("Helvetica", 24), foreground="#333333")
-        title_label.pack(side="top", padx=5)
 
     def create_bottom_frame(self, root):
         self.search_bar = ttk.Entry(root)
