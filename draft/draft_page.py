@@ -38,27 +38,13 @@ class DraftPageApp:
 
         self.bottom_frame = ttk.Frame(root, padding="10")
         self.bottom_frame.pack(side="top", fill="both", expand=True)
-        self.player_view = DataFrameView(self.bottom_frame, self.get_df_to_show(), on_enter=self.on_enter)
+        self.player_view = DataFrameView(self.bottom_frame, self.get_df_to_show(), on_enter=self.on_enter, shade_rows=True) # SHADE ROWS = TRUE
 
         self.bottom_frame.grid_columnconfigure(0, weight=3)
         self.bottom_frame.grid_columnconfigure(1, weight=1)
         self.bottom_frame.grid_rowconfigure(0, weight=1)
 
         self.search_bar.bind('<KeyRelease>', self.update_tree_on_search)
-
-    def create_tree(self, root):
-        tree = ttk.Treeview(root, selectmode="browse")
-
-        tree["columns"] = list(self.get_df_to_show().columns)
-        tree["show"] = "headings"
-
-        self.create_columns(tree)
-        self.insert_rows(tree)
-        self.add_scrollbar(tree, root)
-
-        tree.bind('<Return>', self.on_enter)
-
-        return tree
 
     def update_tree_on_search(self, event):
         if event.keysym == 'Return':
@@ -79,24 +65,6 @@ class DraftPageApp:
         if first_child:
             self.tree.selection_set(first_child)
 
-    def create_columns(self, tree):
-        for col in self.get_df_to_show().columns:
-            tree.heading(col, text=col)
-            tree.column(col, width=100)
-
-    def insert_rows(self, tree):
-        df = self.get_df_to_show()  # Assuming this returns the DataFrame
-
-        for index, row in df.iterrows():
-            added_par_value = row['Added_PAR_Value']
-            color_shade = self.get_color_shade(added_par_value)
-
-            # Create a unique tag for this row with the color shade
-            tag = 'color' + str(index)
-            tree.tag_configure(tag, background=color_shade)
-
-            # Insert the row with the tag
-            tree.insert("", index, values=list(row), tags=(tag,))
 
     def add_scrollbar(self, tree, root):
         scrollbar = ttk.Scrollbar(root, orient="vertical", command=tree.yview)
@@ -121,22 +89,3 @@ class DraftPageApp:
         relevant_df = self.draft_manager.get_draftable_players()
         # relevant_df = relevant_df.drop(columns=['Added_PAR_Value'])
         return relevant_df
-
-    def get_color_shade(self, value):
-        normalized_value = max(-1.0, min(1.0, value / 50.0))  # Clamping the value between -1 and 1
-
-        if normalized_value > 0:
-            # For negative values, linear interpolation between red and white
-            red = 255
-            green = int(255 * (1 - normalized_value))
-        else:
-            # For positive values, linear interpolation between white and green
-            red = int(255 * (normalized_value + 1))
-            green = 255
-
-        # Create the color in RGB format
-
-        color = (red, green, 255)  # Red and green values, with blue set to 0
-
-        color_hash = f'#{color[0]:02x}{color[1]:02x}{color[2]:02x}'
-        return color_hash

@@ -4,13 +4,14 @@ import pandas as pd
 
 
 class DataFrameView:
-    def __init__(self, container, df, title="", on_enter=None):
+    def __init__(self, container, df, title="", on_enter=None, shade_rows=False):
         self.container = ttk.Frame(container)
         self.container.grid(row=0, column=0, sticky="nsew")
 
         self.df = df
 
         self.on_enter = on_enter
+        self.shade_rows = shade_rows
 
         self._add_header(title)
         self._create_tree_view(df)
@@ -41,7 +42,13 @@ class DataFrameView:
 
     def _populate_tree_view(self, df):
         for index, row in df.iterrows():
-            self.tree.insert("", tk.END, values=tuple(row))
+            if self.shade_rows:
+                tag, color_shade = self.get_color_tag(index, row)
+                self.tree.tag_configure(tag, background=color_shade)
+
+                self.tree.insert("", index, values=list(row), tags=(tag,))
+            else:
+                self.tree.insert("", tk.END, values=tuple(row))
 
     def _sort_tree(self, col):
         if col == self.sorting_column:
@@ -61,3 +68,28 @@ class DataFrameView:
         self.tree.delete(selected_item)
         return player_data
 
+    def get_color_tag(self, index, row):
+        added_par_value = row['Added_PAR_Value']
+        color_shade = self.get_color_shade(added_par_value)
+
+        tag = 'color' + str(index)
+        return tag, color_shade
+
+    def get_color_shade(self, value):
+        normalized_value = max(-1.0, min(1.0, value / 50.0))  # Clamping the value between -1 and 1
+
+        if normalized_value > 0:
+            # For negative values, linear interpolation between red and white
+            red = 255
+            green = int(255 * (1 - normalized_value))
+        else:
+            # For positive values, linear interpolation between white and green
+            red = int(255 * (normalized_value + 1))
+            green = 255
+
+        # Create the color in RGB format
+
+        color = (red, green, 255)  # Red and green values, with blue set to 0
+
+        color_hash = f'#{color[0]:02x}{color[1]:02x}{color[2]:02x}'
+        return color_hash
