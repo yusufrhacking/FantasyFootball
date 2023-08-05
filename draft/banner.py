@@ -19,4 +19,4 @@ class Banner:
         separator_below.pack(side="bottom", fill="x", padx=5, pady=5)
 
     def update_banner(self, banner_text):
-        self.banner_label.configure(text=self.banner_text)
+        self.banner_label.configure(text=banner_text)
