@@ -1,3 +1,6 @@
+
+
+
 class RankingsProcessor:
     def __init__(self, overall_rankings, position_requirements, number_of_teams):
         self.overall_rankings = overall_rankings
@@ -31,15 +34,13 @@ class RankingsProcessor:
         for position, player in self.find_positional_replacement_level_players().items():
             replacement_level_points[position] = player['Avg Proj Pts'] if player is not None else 0
 
-        # Special handling for FLEX: use the same replacement level points for RB, WR, and TE
+        print("Replacement level players: ", self.find_positional_replacement_level_players())
+
         flex_replacement_level = replacement_level_points['RB/WR/TE']
         replacement_level_points['RB'] = flex_replacement_level
         replacement_level_points['WR'] = flex_replacement_level
         replacement_level_points['TE'] = flex_replacement_level
 
-        print("Replacement level players: ", self.find_positional_replacement_level_players())
-
-        # Calculate PAR for each player
         self.overall_rankings['PAR'] = self.overall_rankings.apply(
             lambda row: row['Avg Proj Pts'] - replacement_level_points.get(row['Position'], 0),
             axis=1
@@ -57,3 +58,4 @@ class RankingsProcessor:
         par_table['Ranking'] = par_table['PAR'].rank(ascending=False, method='first').astype(int)
 
         return par_table
+

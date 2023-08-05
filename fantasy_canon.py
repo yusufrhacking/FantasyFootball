@@ -16,7 +16,7 @@ class FantasyCanonApp:
         button = tk.Button(root, text="Open Positional Rankings", command=self.open_positional_rankings)
         button.pack(pady=20)
 
-        draft_button = tk.Button(root, text="Open Draft Page", command=self.open_draft_page)
+        draft_button = tk.Button(root, text="Open Mock Draft Page", command=self.open_draft_page)
         draft_button.pack(pady=20)
 
         sleepers_button = tk.Button(root, text="Open Sleepers Page", command=self.open_sleepers_page)
