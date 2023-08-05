@@ -162,13 +162,13 @@ class DraftPageApp:
     def get_color_shade(self, value):
         normalized_value = max(-1.0, min(1.0, value / 50.0))  # Clamping the value between -1 and 1
 
-        if normalized_value < 0:
+        if normalized_value > 0:
             # For negative values, linear interpolation between red and white
             red = 255
-            green = int(255 * (normalized_value + 1))
+            green = int(255 * (1 - normalized_value))
         else:
             # For positive values, linear interpolation between white and green
-            red = int(255 * (1 - normalized_value))
+            red = int(255 * (normalized_value + 1))
             green = 255
 
         # Create the color in RGB format
