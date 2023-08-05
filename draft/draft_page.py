@@ -160,15 +160,24 @@ class DraftPageApp:
         return relevant_df
 
     def get_color_shade(self, value):
-        # Normalize the value to the range 0 to 1
-        normalized_value = (value + 50) / 100.0
+        normalized_value = max(-1.0, min(1.0, value / 50.0))  # Clamping the value between -1 and 1
 
-        # Calculate the red and green components based on the normalized value
-        red = int(255 * (1 - normalized_value))
-        green = int(255 * normalized_value)
+        if normalized_value < 0:
+            # For negative values, linear interpolation between red and white
+            red = 255
+            green = int(255 * (normalized_value + 1))
+        else:
+            # For positive values, linear interpolation between white and green
+            red = int(255 * (1 - normalized_value))
+            green = 255
 
         # Create the color in RGB format
-        color = (red, green, 0)  # Red and green values, with blue set to 0
 
-        return f'#{color[0]:02x}{color[1]:02x}00'
+        color = (red, green, 255)  # Red and green values, with blue set to 0
+
+        color_hash = f'#{color[0]:02x}{color[1]:02x}{color[2]:02x}'
+        return color_hash
+
+
+
 
