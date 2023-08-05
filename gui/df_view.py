@@ -51,16 +51,15 @@ class DataFrameView:
                 self.tree.insert("", tk.END, values=tuple(row))
 
     def _sort_tree(self, col):
-        self.df.reset_index(drop=True, inplace=True)
         if col == self.sorting_column:
             self.sorting_order = not self.sorting_order
         else:
             self.sorting_order = True
 
         self.df.sort_values(by=col, ascending=self.sorting_order, inplace=True)
+        self.df.reset_index(drop=True, inplace=True)
         self.tree.delete(*self.tree.get_children())
         self._populate_tree_view(self.df)
-        self.df.reset_index(drop=True, inplace=True)
         self.sorting_column = col
 
     def update_on_query(self, query, new_df_to_show):
