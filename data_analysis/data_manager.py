@@ -1,19 +1,21 @@
 import pandas as pd
 
 from data_analysis.data_standardizer import standardize_name
+from data_intake.adjustments_processing import read_adjustments_data
 from data_intake.adp_processing import read_adp_data
 from data_intake.fantasy_life_csv_processing import filter_by_position, get_fantasy_life_dfs
 from data_intake.pff_csv_processing import read_pff_csv
 
 pff_projections_path = "/Users/yusufhacking/Documents/Projects/FantasyFootball/data_intake/data/pff_projs/pff_all_projections.csv"
 adp_path = "/Users/yusufhacking/Documents/Projects/FantasyFootball/data_intake/data/adp/4for4-adp-table.csv"
-
+adjustments_path = "/Users/yusufhacking/Documents/Projects/FantasyFootball/data_intake/data/adjustments/adjustments.csv"
 
 def run_rankings_pipeline():
     # raw data
     fantasy_life_df = get_fantasy_life_dfs()
     pff_df = read_pff_csv(pff_projections_path)
     adp_df = read_adp_data(adp_path)
+    adjustments_df = read_adjustments_data(adjustments_path)
 
     fantasy_life_df['Player'] = fantasy_life_df['Player'].apply(standardize_name)
     pff_df['playerName'] = pff_df['playerName'].apply(standardize_name)
@@ -30,6 +32,16 @@ def run_rankings_pipeline():
     # Merge the above DataFrame with ADP DataFrame
     result_df = pd.merge(merged_df, adp_df, on='Player', how='left')
     result_df['ADP'] = result_df['ADP'].fillna(250).astype(int)
+
+    result_df = pd.merge(result_df, adjustments_df, on='Player', how='left')
+
+    # Apply the adjustments
+    result_df['net_percent'] = result_df['net_percent'].fillna(0) / 100  # Convert to proportion
+    result_df['Avg Proj Pts'] = result_df['Avg Proj Pts'] * (1 + result_df['net_percent'])
+    result_df['Avg Proj Pts'] = result_df['Avg Proj Pts'].round(1)
+
+    # Drop the net_percent column as it's no longer needed (optional)
+    result_df = result_df.drop(columns=['net_percent'])
 
     # Rename columns and select the desired columns
     result_df = result_df.rename(columns={
