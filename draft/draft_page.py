@@ -6,7 +6,6 @@ from draft.draft_manager import DraftManager
 from draft.draft_title import DraftTitle
 from draft.team_sidebar import TeamSidebar
 from gui.df_view import DataFrameView
-from gui.dynamic_df_view import DynamicDfView
 
 title = "Fantasy Draft Page"
 
@@ -39,7 +38,7 @@ class DraftPageApp:
 
         self.bottom_frame = ttk.Frame(root, padding="10")
         self.bottom_frame.pack(side="top", fill="both", expand=True)
-        self.player_view = DynamicDfView(self.bottom_frame, self.draft_manager.draftable_players,
+        self.player_view = DataFrameView(self.bottom_frame, self.draft_manager.draftable_players,
                                          on_enter=self.on_enter_draft, shade_rows=True)
 
         self.bottom_frame.grid_columnconfigure(0, weight=3)
@@ -71,6 +70,8 @@ class DraftPageApp:
         player_data = self.draft_player()
         self.draft_manager.draft_player_data(player_data)
         self.team_sidebar.player_was_drafted()
+        self.player_view.df = self.draft_manager.draftable_players
+
 
     def draft_player(self):
         player_data = self.player_view.pop_selected_player_data()
