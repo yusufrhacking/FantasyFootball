@@ -1,10 +1,8 @@
 {
-    "number_of_teams": 10,
+    "number_of_teams": 16,
     "position_requirements": {
         "QB": 1,
-        "RB": 2,
-        "WR": 3,
-        "TE": 1,
+        "RB/WR/TE": 6,
         "BENCH": 6
     },
     "draft_order" : [
