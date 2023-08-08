@@ -68,9 +68,15 @@ class DataFrameView:
 
         first_child = None
 
-        for row in self.df.itertuples():
+        for index, row in self.df.iterrows():
             if query in str(row).lower():
-                child_id = self.tree.insert("", "end", values=row[1:])
+                if self.shade_rows:
+                    tag, color_shade = self.get_color_tag(index, row)
+                    self.tree.tag_configure(tag, background=color_shade)
+
+                    child_id = self.tree.insert("", index, values=list(row), tags=(tag,))
+                else:
+                    child_id = self.tree.insert("", tk.END, values=list(row))
                 if first_child is None:
                     first_child = child_id
 
