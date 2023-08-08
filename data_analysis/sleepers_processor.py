@@ -26,17 +26,18 @@ def get_sleepers(par_table, config):
 
         adp_par = max(0, par_column[adj_yahoo_adp])
 
-        added_par_value = player_par - adp_par
-        if par_ranking <= par_cutoff:
-            sleepers.append({
-                'Player': row['Player'],
-                'Position': row['Position'],
-                'Added_PAR_Value': added_par_value,
-                'PAR_Ranking': par_ranking,
-                'Yahoo_ADP': yahoo_adp,
-                'ADP_PAR': adp_par,
-                'PAR': player_par
-            })
+        if player_par > 0:
+            added_par_value = player_par - adp_par
+            if par_ranking <= par_cutoff:
+                sleepers.append({
+                    'Player': row['Player'],
+                    'Position': row['Position'],
+                    'Added_PAR_Value': added_par_value,
+                    'PAR_Ranking': par_ranking,
+                    'Yahoo_ADP': yahoo_adp,
+                    'ADP_PAR': adp_par,
+                    'PAR': player_par
+                })
 
     sleepers_df = pd.DataFrame(sleepers)
 
