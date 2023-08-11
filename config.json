@@ -4,9 +4,17 @@
         "QB": 1,
         "RB": 1,
         "WR": 1,
+        "RB/WR": 3,
         "TE": 1,
-        "BENCH": 7
+        "BENCH": 6
     },
+    "position_multipliers": {
+        "QB": 1.25,
+        "RB": 2,
+        "WR": 2,
+        "RB/WR": 2,
+        "TE": 1.25,
+        "BENCH":  1},
     "draft_order" : [
         "MAX/TUCKER", "SAM", "HEMA", "DEAN", "BOBBY", "RICHIE", "LeJack",  "ME",
         "JACK", "HOLUBOWSKI", "MADELINE", "NOAH/VENCHI", "AKIN", "UNCLE"

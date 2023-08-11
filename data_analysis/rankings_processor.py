@@ -1,18 +1,16 @@
-
-
-
 class RankingsProcessor:
-    def __init__(self, overall_rankings, position_requirements, number_of_teams):
+    def __init__(self, overall_rankings, position_requirements, config):
         self.overall_rankings = overall_rankings
         self.position_requirements = position_requirements
-        self.number_of_teams = number_of_teams
+        self.number_of_teams = config['number_of_teams']
+        self.position_replacement_player_multipliers = config['position_multipliers']
         self.replacement_player_multiplier = 1.5
 
     def calculate_players_used_at_positions(self):
         players_used_at_position = {}
         for position, requirement in self.position_requirements.items():
             players_used_at_position[position] = int(
-                requirement * self.number_of_teams * self.replacement_player_multiplier)
+                requirement * self.number_of_teams * self.position_replacement_player_multipliers[position])
         return players_used_at_position
 
     def find_positional_replacement_level_players(self):

@@ -15,7 +15,7 @@ def main():
     players_data = get_players_data()
 
     overall_ranking_dfs = players_data['OVR']
-    rankings_processor = RankingsProcessor(overall_ranking_dfs, position_requirements, number_of_teams)
+    rankings_processor = RankingsProcessor(overall_ranking_dfs, position_requirements, config)
     par_table = rankings_processor.calculate_par_table()
 
     position_separated_dfs = [(df, position) for position, df in players_data.items()]
