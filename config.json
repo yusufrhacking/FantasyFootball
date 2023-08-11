@@ -1,12 +1,15 @@
 {
-    "number_of_teams": 16,
+    "number_of_teams": 14,
     "position_requirements": {
         "QB": 1,
-        "RB/WR/TE": 6,
-        "BENCH": 6
+        "RB": 1,
+        "WR": 1,
+        "TE": 1,
+        "BENCH": 7
     },
     "draft_order" : [
-        "MAX", "SAM", "HEMA", "DEAN", "BOBBY", "RICHIE", "LeJack",  "ME",
-        "JACK", "HOLUBOWSKI", "MADELINE", "TUCKER", "NOAH", "VENCHI", "AKIN", "UNCLE"
+        "MAX/TUCKER", "SAM", "HEMA", "DEAN", "BOBBY", "RICHIE", "LeJack",  "ME",
+        "JACK", "HOLUBOWSKI", "MADELINE", "NOAH/VENCHI", "AKIN", "UNCLE"
     ]
 }
+

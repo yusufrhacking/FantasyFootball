@@ -36,11 +36,19 @@ class RankingsProcessor:
 
         print("Replacement level players: ", self.find_positional_replacement_level_players())
 
-        if 'RB/WR/TE' in replacement_level_points:
-            flex_replacement_level = replacement_level_points['RB/WR/TE']
-            replacement_level_points['RB'] = flex_replacement_level
-            replacement_level_points['WR'] = flex_replacement_level
-            replacement_level_points['TE'] = flex_replacement_level
+        for position in replacement_level_points:
+            sub_positions = position.split('/')
+            for sub_position in sub_positions:
+                replacement_level_points[sub_position] = replacement_level_points[position]
+
+
+        print("Replacement level points: ", replacement_level_points)
+
+        # if 'RB/WR/TE' in replacement_level_points:
+        #     flex_replacement_level = replacement_level_points['RB/WR/TE']
+        #     replacement_level_points['RB'] = flex_replacement_level
+        #     replacement_level_points['WR'] = flex_replacement_level
+        #     replacement_level_points['TE'] = flex_replacement_level
 
         self.overall_rankings['PAR'] = self.overall_rankings.apply(
             lambda row: row['Avg Proj Pts'] - replacement_level_points.get(row['Position'], 0),
