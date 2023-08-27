@@ -14,9 +14,10 @@
         "WR": 2,
         "RB/WR": 2,
         "TE": 1.25,
-        "BENCH":  1},
+        "BENCH":  1
+    },
     "draft_order" : [
-        "MAX/TUCKER", "SAM", "HEMA", "DEAN", "BOBBY", "RICHIE", "LeJack",  "ME",
+        "ME", "MAX/TUCKER", "SAM", "HEMA", "DEAN", "BOBBY", "RICHIE", "LeJack",
         "JACK", "HOLUBOWSKI", "MADELINE", "NOAH/VENCHI", "AKIN", "UNCLE"
     ]
 }
